@@ -14,11 +14,6 @@ Content-Type: application/json
 
 POST https://prisonvms.azurewebsites.net/login
 Content-Type: application/json
-
-{
-  "username": "Mikayla",
-  "password": "Kayla123"
-}
 ###
 
 GET https://prisonvms.azurewebsites.net/admindetails
