@@ -1,5 +1,5 @@
 ### GOODLUCK ###
-POST http://localhost:3000/login
+POST https://prisonvms.azurewebsites.net/register
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/login
+POST https://prisonvms.azurewebsites.net/login
 Content-Type: application/json
 
 {
@@ -16,22 +16,48 @@ Content-Type: application/json
   "password": "Kayla123"
 }
 ###
+POST https://prisonvms.azurewebsites.net/issueVisitorPass
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhNDQ2ZGM1OTA0ZWE0NDdmM2FhZGIiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3ODMyNDAyfQ.Y1d8y_KJKQGBUvBJQNpczMLWnYtZGNfsjGRlhb7mZj0
+Content-Type: application/json
 
+{
+  
+  "visitorId": "009",
+  "name": "Sarah Jose"
+}
 ###
-POST http://localhost:3000/createvisitorData
+
+
+GET https://prisonvms.azurewebsites.net/pass
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhcmFoSiIsInJvbGUiOiJ2aXNpdG9yIiwiaWF0IjoxNzAzNDMwMTEwfQ.a1pzMtDzN0Ne8HCPRYLd2PKJ41hlT8HhMbGl4hI-72Q
+Content-Type: application/json
+###
+ 
+###
+POST https://prisonvms.azurewebsites.net/createvisitorData
 Content-Type: application/json
 Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhNDQ2ZGM1OTA0ZWE0NDdmM2FhZGIiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3ODMyNDAyfQ.Y1d8y_KJKQGBUvBJQNpczMLWnYtZGNfsjGRlhb7mZj0
 
 {
+    "username":"SarahJ",
+    "password": "SJ123",
     "name": "Sarah Jose",
     "city": "Melbourne",
     "relationship": "aunt",
-    "visitorId": "008"
+    "visitorId": "009"
   
 }
 ###
+POST https://prisonvms.azurewebsites.net/visitor/login
+Content-Type: application/json
 
-PATCH  http://localhost:3000/updatevisitor/649a476a418f91102380abe6
+{
+  "username": "SarahJ",
+  "password": "SJ123"
+}
+###
+
+PATCH  https://prisonvms.azurewebsites.net/649a476a418f91102380abe6
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDk3Mzc5YjI0OWQ5ZTNmYzdlZDQ4ZTUiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3NjM1MDg1fQ.XP_Lhl8zP_LQW_edNNcHH6xG950qsnJAOTquu0Qo9ek
 
@@ -40,31 +66,32 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDk3Mzc5Y
 }
 
 ###
-DELETE  http://localhost:3000/deletevisitor/649a476a418f91102380abe6
+DELETE  https://prisonvms.azurewebsites.net/649a476a418f91102380abe6
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDk3Mzc5YjI0OWQ5ZTNmYzdlZDQ4ZTUiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3NjM1MDg1fQ.XP_Lhl8zP_LQW_edNNcHH6xG950qsnJAOTquu0Qo9ek
 ###
 
-GET http://localhost:3000/admins
+GET https://prisonvms.azurewebsites.net/admins
 Content-Type: application/json
 ###
 
-GET http://localhost:3000/visitors
+GET https://prisonvms.azurewebsites.net/visitors
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhNDQ2ZGM1OTA0ZWE0NDdmM2FhZGIiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3ODMyNDAyfQ.Y1d8y_KJKQGBUvBJQNpczMLWnYtZGNfsjGRlhb7mZj0
 Content-Type: application/json
 ###
 
-GET http://localhost:3000/prisoner
+GET https://prisonvms.azurewebsites.net/prisoner
 Content-Type: application/json
 ###
 
-GET http://localhost:3000/cell
+GET https://prisonvms.azurewebsites.net/cell
 Content-Type: application/json
 ###
 
-GET http://localhost:3000/emergency
+GET https://prisonvms.azurewebsites.net/emergency
 Content-Type: application/json
 ###
 
-GET http://localhost:3000/casedetail
+GET https://prisonvms.azurewebsites.net/casedetail
 Content-Type: application/json
 ###
