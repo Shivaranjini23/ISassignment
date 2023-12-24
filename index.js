@@ -4,8 +4,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+
 
 app.use(express.json());
+app.use(bodyParser.json());
 
 // MongoDB connection URL
 const uri = "mongodb+srv://shivaranjini2:4f8GZeWiJmGhRlEx@cluster0.k1veqjb.mongodb.net/?retryWrites=true&w=majority";
@@ -41,6 +44,7 @@ const cellCollection = db.collection('CELL');
 const emergencyCollection = db.collection('EMERGENCY_CONTACT');
 const casedetailCollection = db.collection('CASE_DETAILS');
 const visitorPassCollection = db.collection('VISITORPASS')
+
 /**login admin function*/
 async function login(reqUsername, reqPassword) {
   return adminCollection.findOne({ username: reqUsername, password: reqPassword })
@@ -110,7 +114,10 @@ function verifyToken(req, res, next) {
   });
 }
 
-
+// Serve the login page
+app.get('/loginpage', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
 
 
 // Login Admin

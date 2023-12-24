@@ -8,6 +8,11 @@ Content-Type: application/json
 }
 
 ###
+
+GET https://prisonvms.azurewebsites.net/loginpage
+Content-Type: application/json
+###
+
 POST https://prisonvms.azurewebsites.net/login
 Content-Type: application/json
 
