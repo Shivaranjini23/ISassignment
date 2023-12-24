@@ -3,60 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Success!</title>
+    <title>Login Success!</title>
 </head>
 
 <body>
-  
-
-  <script>
-    async function getdata() {
-        const response = await fetch('https://prisonvms.azurewebsites.net/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
-        });
-        const result = await response.json();
-        console.log("This is data :", result);
-        if (result.success) {
-          // Login successful, redirect the user to the home page
-          document.getElementById('username').innerText = 'Username: ' + loginResponse.user.username;
-          document.getElementById('name').innerText = 'Name: ' + loginResponse.user.name;
-          document.getElementById('_id').innerText = '_id: ' + loginResponse.user._id;
-          document.getElementById('age').innerText = 'Age: ' + loginResponse.user.age;
-          document.getElementById('gender').innerText = '_id: ' + loginResponse.user.gender;
-        } else {
-          // Login failed, display an error message
-
-          window.location.replace('login.html');
-          alert("ERROR!:",result.message);
+    <script>
+        async function getData() {
+            const response = await fetch('https://prisonvms.azurewebsites.net/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            const result = await response.json();
+            console.log("This is data:", result);
+            if (result.success) {
+                // Redirect to the userdetails endpoint
+                window.location.href = '/admindetails';
+            } else {
+                // Login failed, display an error message
+                window.location.replace('login.html');
+                alert("ERROR!:", result.message);
+            }
         }
-      } 
-      try {
-  // Your code that may throw an error
-} catch (error) {
-  console.error(error);
-  alert('An error occurred while attempting to login. Please try again later.');
-}
 
+        try {
+            // Your code that may throw an error
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred while attempting to login. Please try again later.');
+        }
 
-        getdata();
+        getData();
+    </script>
 
-  </script>`
-
-  <form id="data-container">
-    <h3>Welcome back,  <span id="username2"></span>!</h3>
-  <p>You have successfully logged in.</p>
-    <p>Username: <span id="username"></span></p>
-    <p>Name: <span id="name"></span></p>
-    <p>Matrix: <span id="_id"></span></p>
-    <p>Email: <span id="age"></span></p>
-    <p>Phone: <span id="gender"></span></p>
-    <button type="button" onclick="window.location='logout.html'">Log out</button>
-  </form>
-
+    <form id="data-container">
+        <!-- Your HTML content for the login success page -->
+    </form>
 </body>
-
 </html>

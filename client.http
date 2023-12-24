@@ -1,13 +1,10 @@
 ### GOODLUCK ###
-POST https://localhost:3000/register
+POST https://prisonvms.azurewebsites.net/register
 Content-Type: application/json
 
 {
   "username": "Mikayla",
-  "password": "Kayla123",
-  "name": "Mikayla Jones",
-  "age":"34",
-  "gender":"female"
+  "password": "Kayla123"
 }
 ###
 
@@ -22,6 +19,10 @@ Content-Type: application/json
   "username": "Mikayla",
   "password": "Kayla123"
 }
+###
+
+GET https://prisonvms.azurewebsites.net/admindetails
+Content-Type: application/json
 ###
 
 POST https://prisonvms.azurewebsites.net/issueVisitorPass

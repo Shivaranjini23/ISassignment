@@ -76,8 +76,8 @@ async function register(reqUsername, reqPassword, reqName, reqAge, reqGender) {
     username: reqUsername,
     password: reqPassword,
     name: reqName,
-    age:reqAge,
-    gender:reqGender
+    age: reqAge,
+    gender: reqGender,
   })
     .then(() => {
       return "Registration successful!";
@@ -87,6 +87,7 @@ async function register(reqUsername, reqPassword, reqName, reqAge, reqGender) {
       return "Error encountered!";
     });
 }
+
 
 function generateToken(userData) {
   const token = jwt.sign(userData, 'inipassword');
@@ -192,18 +193,42 @@ function generatePassNumber() {
 }
 
 
-// Register Admin
-app.post('/register', async (req, res) => {
+// Register Admin with additional details
+app.post('/register', (req, res) => {
   console.log(req.body);
 
-  try {
-    let result = await register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
-    res.send(result);
-  } catch (error) {
+  let result = register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
+  result.then(response => {
+    res.send(response);
+  }).catch(error => {
     console.error('Error in register route:', error);
-    res.status(500).send(`An error occurred during registration: ${error.message}`);
+    res.status(500).send("An error occurred during registration.");
+  });
+});
+
+// Endpoint to get user details upon successful login
+app.get('/admindetails', verifyToken, async (req, res) => {
+  // Check if the request is coming from an authenticated admin
+  if (req.user && req.user.username) {
+    try {
+      // Fetch user details based on the username
+      const adminDetails = await adminCollection.findOne({ username: req.user.username });
+
+      if (adminDetails) {
+        // Return user details in the response
+        res.send(adminDetails);
+      } else {
+        res.status(404).send('User details not found.');
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      res.status(500).send('Error fetching user details');
+    }
+  } else {
+    res.status(401).send('Unauthorized: Admin authentication required.');
   }
 });
+
 
 // Create a visitor
 app.post('/createvisitorData', verifyToken, async (req, res) => {
