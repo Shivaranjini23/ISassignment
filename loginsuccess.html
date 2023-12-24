@@ -22,11 +22,11 @@
         console.log("This is data :", result);
         if (result.success) {
           // Login successful, redirect the user to the home page
-          admin.getElementById('username').innerText = 'Username: ' + loginResponse.user.username;
-          admin.getElementById('name').innerText = 'Name: ' + loginResponse.user.name;
-          admin.getElementById('_id').innerText = '_id: ' + loginResponse.user._id;
-          admin.getElementById('age').innerText = 'Age: ' + loginResponse.user.age;
-          admin.getElementById('gender').innerText = '_id: ' + loginResponse.user.gender;
+          document.getElementById('username').innerText = 'Username: ' + loginResponse.user.username;
+          document.getElementById('name').innerText = 'Name: ' + loginResponse.user.name;
+          document.getElementById('_id').innerText = '_id: ' + loginResponse.user._id;
+          document.getElementById('age').innerText = 'Age: ' + loginResponse.user.age;
+          document.getElementById('gender').innerText = '_id: ' + loginResponse.user.gender;
         } else {
           // Login failed, display an error message
 
