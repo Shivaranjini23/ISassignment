@@ -75,6 +75,9 @@ async function register(reqUsername, reqPassword) {
   return adminCollection.insertOne({
     username: reqUsername,
     password: reqPassword,
+    name: reqName,
+    age:reqAge,
+    gender:ReqGender
     
   })
     .then(() => {
