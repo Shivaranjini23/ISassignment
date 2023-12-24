@@ -1,5 +1,5 @@
 ### GOODLUCK ###
-POST https://prisonvms.azurewebsites.net/register
+POST https://localhost:3000/register
 Content-Type: application/json
 
 {
@@ -9,7 +9,6 @@ Content-Type: application/json
   "age":"34",
   "gender":"female"
 }
-
 ###
 
 GET https://prisonvms.azurewebsites.net/loginpage
@@ -24,32 +23,6 @@ Content-Type: application/json
   "password": "Kayla123"
 }
 ###
-
-# Parse the response and display user info
-var loginResponse = pm.response.json();
-
-if (loginResponse.success) {
-  console.log('Login successful');
-  console.log('Token:', loginResponse.token);
-  console.log('User Information:');
-  console.log('  1. Username:', loginResponse.user.username);
-  console.log('  2. Name:', loginResponse.user.name);
-  console.log('  3. _id:', loginResponse.user._id);
-  console.log('  4. Age:', loginResponse.user.age);
-  console.log('  5. Gender:', loginResponse.user.gender);
-
-  // Now you can use the user information to display on the login page
-  // Example: Update DOM elements with user information
-  admin.getElementById('username').innerText = 'Username: ' + loginResponse.user.username;
-  admin.getElementById('name').innerText = 'Name: ' + loginResponse.user.name;
-  admin.getElementById('_id').innerText = '_id: ' + loginResponse.user._id;
-  admin.getElementById('age').innerText = 'Age: ' + loginResponse.user.age;
-  admin.getElementById('gender').innerText = '_id: ' + loginResponse.user.gender;
-  // Add more lines as needed
-
-} else {
-  console.log('Login failed:', loginResponse.message);
-}
 
 POST https://prisonvms.azurewebsites.net/issueVisitorPass
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhNDQ2ZGM1OTA0ZWE0NDdmM2FhZGIiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3ODMyNDAyfQ.Y1d8y_KJKQGBUvBJQNpczMLWnYtZGNfsjGRlhb7mZj0

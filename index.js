@@ -71,14 +71,13 @@ async function login(reqUsername, reqPassword) {
 }
 
 /**create admin function */
-async function register(reqUsername, reqPassword) {
+async function register(reqUsername, reqPassword, reqName, reqAge, reqGender) {
   return adminCollection.insertOne({
     username: reqUsername,
     password: reqPassword,
     name: reqName,
     age:reqAge,
-    gender:ReqGender
-    
+    gender:reqGender
   })
     .then(() => {
       return "Registration successful!";
@@ -194,16 +193,16 @@ function generatePassNumber() {
 
 
 // Register Admin
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   console.log(req.body);
 
-  let result = register(req.body.username, req.body.password, req.body.name, req.body.email);
-  result.then(response => {
-    res.send(response);
-  }).catch(error => {
+  try {
+    let result = await register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
+    res.send(result);
+  } catch (error) {
     console.error('Error in register route:', error);
-    res.status(500).send("An error occurred during registration.");
-  });
+    res.status(500).send(`An error occurred during registration: ${error.message}`);
+  }
 });
 
 // Create a visitor
