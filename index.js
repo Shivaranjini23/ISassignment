@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
@@ -16,8 +16,6 @@ const uri = "mongodb+srv://shivaranjini2:4f8GZeWiJmGhRlEx@cluster0.k1veqjb.mongo
 
 // Create a new MongoClient
 const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -95,6 +93,8 @@ function generateToken(userData) {
 
 }
 
+const jwtSecret = 'inipassword';
+
 function verifyToken(req, res, next) {
   let header = req.headers.authorization;
 
@@ -103,19 +103,28 @@ function verifyToken(req, res, next) {
     return res.status(401).send('Unauthorized: Missing Authorization header');
   }
 
-  console.log(header);
-
+  // Split the header to get the token
   let token = header.split(' ')[1];
 
-  jwt.verify(token, 'inipassword', function (err, decoded) {
+  // Check if the token is missing
+  if (!token) {
+    return res.status(401).send('Unauthorized: Token missing');
+  }
+
+  jwt.verify(token, jwtSecret, function (err, decoded) {
     if (err) {
-      res.status(401).send('Invalid Token');
+      if (err.name === 'TokenExpiredError') {
+        res.status(401).send('Unauthorized: Token expired');
+      } else {
+        res.status(401).send('Unauthorized: Invalid token');
+      }
     } else {
       req.user = decoded;
       next();
     }
   });
 }
+
 
 // Serve the login page
 app.get('/loginpage', (req, res) => {
@@ -276,10 +285,10 @@ app.post('/visitor/login', async (req, res) => {
   // Replace this with your actual authentication logic
 
   const visitor = await visitorCollection.findOne({ username, password });
-
+  
   if (visitor) {
     // Generate a token for the visitor (you can use the same generateToken function as for admin)
-    const token = generateToken({ username: visitor.username, role: 'visitor' });
+    const token = generateToken({ username: visitor.username, password: visitor.password });
     res.send(token);
   } else {
     res.status(401).send('Visitor login failed. Invalid credentials.');
@@ -287,9 +296,9 @@ app.post('/visitor/login', async (req, res) => {
 });
 
 // Retrieve Visitor Pass Number for Authenticated Visitor
-app.get('/visitor/pass', verifyToken, async (req, res) => {
+app.get('/visitor/retrievepass', verifyToken, async (req, res) => {
   // Check if the request is coming from an authenticated visitor
-  if (req.user && req.user.role === 'visitor') {
+  if (req.user && req.user.username) {
     // Retrieve the visitor pass based on the visitor's information
     const visitorPass = await visitorPassCollection.findOne({ visitorId: req.user.visitorId });
 
