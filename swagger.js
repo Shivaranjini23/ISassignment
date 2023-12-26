@@ -12,11 +12,23 @@
  *       name: x-session-identifier
  */
 
+
 /**
- * @openapi
+ * @swagger
+ * tags:
+ *   - name: Admin
+ *     description: Admin operations
+ *   - name: Visitor
+ *     description: Visitor operations
+ */
+
+
+/**
+ * @swagger
  * /login:
  *   post:
  *     summary: Authenticate admin and generate a new token.
+ *     tags: [Admin]
  *     requestBody:
  *       required: true
  *       content:
@@ -41,10 +53,11 @@
 
 /**
 /**
- * @openapi
+ * @swagger
  * /issueVisitorPass:
  *   post:
  *     summary: Issue a visitor pass for an authenticated admin.
+ *     tags: [Admin]
  *     security:
  *       - parameters:
  *           - in: header
@@ -70,10 +83,11 @@
 
 
 /**
- * @openapi
+ * @swagger
  * /register:
  *   post:
  *     summary: Register a new admin with additional details.
+ *     tags: [Admin]
  *     requestBody:
  *       required: true
  *       content:
@@ -102,10 +116,11 @@
 // 
 
 /**
- * @openapi
+ * @swagger
  * /createvisitorData:
  *   post:
  *     summary: Create a new visitor with details.
+ *     tags: [Admin]
  *     security:
  *       - BearerAuth: []  
  *     requestBody:
@@ -137,10 +152,11 @@
  */
 
 /**
- * @openapi
+ * @swagger
  * /visitor/login:
  *   post:
  *     summary: Authenticate a visitor and generate a new token.
+ *     tags: [Visitor]
  *     requestBody:
  *       required: true
  *       content:
@@ -162,10 +178,11 @@
  */
 /**
 /**
- * @openapi
+ * @swagger
  * /visitor/retrievepass:
  *   get:
  *     summary: Retrieve the visitor pass for an authenticated visitor.
+ *     tags: [Visitor]
  *     parameters:
  *       - in: header
  *         name: x-session-identifier
@@ -188,10 +205,11 @@
  */
 
 /**
- * @openapi
+ * @swagger
  * /visitors:
  *   get:
  *     summary: View all visitors (protected route for authenticated admins only).
+ *     tags: [Admin]
  *     parameters:
  *       - in: header
  *         name: x-session-identifier
