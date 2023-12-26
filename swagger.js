@@ -11,12 +11,11 @@ const options = {
     },
     servers: [
       {
-        url: 'https://prisonvms.azurewebsites.net/api-docs/',
-        description: 'Your Azure server description',
+        url: 'https://prisonvms.azurewebsites.net/api-docs',
       },
     ],
   },
-  apis: ['./https://github.com/Shivaranjini23/ISassignment.git/*.js'], // Specify the path to your route files
+  apis: ['./https://github.com/Shivaranjini23/ISassignment.git/index.js'], // Specify the path to your route files
 };
 
 const specs = swaggerJsdoc(options);
