@@ -6,9 +6,15 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 
+// Declare global data structures to store active tokens
+const activeTokens = {}; // For admin tokens
+const activeVisitorTokens = {}; // For visitor tokens
+
+
 
 app.use(express.json());
 app.use(bodyParser.json());
+
 
 // MongoDB connection URL
 const uri = "mongodb+srv://shivaranjini2:4f8GZeWiJmGhRlEx@cluster0.k1veqjb.mongodb.net/?retryWrites=true&w=majority";
@@ -131,66 +137,97 @@ app.get('/loginpage', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
 
+// Function to generate a session identifier
+function generateSessionIdentifier() {
+  // Implement your logic to generate a unique session identifier
+  // Example: You can use a combination of timestamp and a random number
+  const timestamp = Date.now();
+  const random = Math.floor(Math.random() * 1000);
+  return `Session_${timestamp}_${random}`;
+}
 
 // Login Admin
-app.post('/login', (req, res) => {
-  console.log(req.body);
+app.post('/login', async (req, res) => {
+  try {
+    let result = login(req.body.username, req.body.password);
+    result.then(response => {
+      if (response.success) {
+        // Generate a new token
+        const newToken = generateToken(response.users);
 
-  let result = login(req.body.username, req.body.password);
-  result.then(response => {
-    console.log(response); // Log the response received
+        // Store the new token with a session identifier
+        const sessionIdentifier = generateSessionIdentifier(); // Implement this function
+        activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
 
-    if (response.success) {
-      let token = generateToken(response.users);
-      res.send(token);
-    } else {
-      res.status(401).send(response.message);
-    }
-  }).catch(error => {
+
+        // Send the new token and session identifier in the response
+        const responseMessage = `Admin login successful! 
+         Token: ${newToken}
+         Session: ${sessionIdentifier}`;
+        res.send(responseMessage);
+      } else {
+        res.status(401).send("Invalid credentials. Please try again.");
+      }
+    }).catch(error => {
+      console.error('Error in login route:', error);
+      res.status(500).send("An error occurred during login.");
+    });
+  } catch (error) {
     console.error('Error in login route:', error);
     res.status(500).send("An error occurred during login.");
-  });
-});
-
-
-// Issue Visitor Pass for Authenticated Admin
-app.post('/issueVisitorPass', verifyToken, async (req, res) => {
-  // Check if the request is coming from an authenticated admin
-  if (req.user && req.user.username) {
-    // Check if the visitor is registered
-    const visitor = await visitorCollection.findOne({ visitorId: req.body.visitorId });
-
-    if (!visitor) {
-      return res.status(404).send('Visitor not found. Please register the visitor first.');
-    }
-
-    // Place your logic here to issue a visitor pass
-    // Example: Generate a pass and store it in the database
-    const passNumber = generatePassNumber();
-    const visitorPass = {
-      passNumber: passNumber,
-      issuedBy: req.user.username,
-      visitorId: req.body.visitorId, // Associate the pass with the visitor
-      // Add other pass details as needed
-    };
-
-    // Store the visitor pass details in the database or perform any other actions
-    await visitorPassCollection.insertOne(visitorPass);
-
-    // Log the pass number and visitor name to the terminal
-    console.log(`Visitor Pass Issued 
-     Visitor Name: ${visitor.name}
-     Pass Number: ${passNumber} `);
-
-    const responseMessage = `Visitor pass issued successfully! 
-      Visitor Name: ${visitor.name}
-      Pass Number: ${passNumber}`;
-    res.status(200).send(responseMessage);
-  } else {
-    res.status(401).send('Unauthorized: Admin authentication required.');
   }
 });
 
+// Issue Visitor Pass for Authenticated Admin
+app.post('/issueVisitorPass', verifyToken, async (req, res) => {
+  try {
+    // Check if the request is coming from an authenticated admin
+    if (req.user && req.user.username) {
+      // Check if the visitor is registered
+      const visitor = await visitorCollection.findOne({ visitorId: req.body.visitorId });
+
+      if (!visitor) {
+        return res.status(404).send('Visitor not found. Please register the visitor first.');
+      }
+
+      // Check if the stored session identifier matches the one in the request
+      const storedSessionIdentifier = activeTokens[req.user.username]?.session;
+      const requestSessionIdentifier = req.headers['x-session-identifier']; // Include session identifier in the request headers
+
+      if (storedSessionIdentifier !== requestSessionIdentifier) {
+        return res.status(401).send('Unauthorized: Session expired. Please login again!');
+      }
+
+      // Place your logic here to issue a visitor pass
+      // Example: Generate a pass and store it in the database
+      const passNumber = generatePassNumber();
+      const visitorPass = {
+        passNumber: passNumber,
+        issuedBy: req.user.username,
+        visitorId: req.body.visitorId,
+        // Add other pass details as needed
+      };
+
+      // Store the visitor pass details in the database or perform any other actions
+      await visitorPassCollection.insertOne(visitorPass);
+
+      // Log the pass number and visitor name to the terminal
+      console.log(`Visitor Pass Issued 
+         Visitor Name: ${visitor.name}
+         Pass Number: ${passNumber} `);
+
+      const responseMessage = `Visitor pass issued successfully! 
+         Visitor Name: ${visitor.name}
+         Pass Number: ${passNumber}`;
+      res.status(200).send(responseMessage);
+    } else {
+      res.status(401).send('Unauthorized: Admin authentication required.');
+    }
+  } catch (error) {
+    console.error('Error issuing visitor pass:', error);
+    res.status(500).send('Error issuing visitor pass');
+  }
+});
 
 // Function to generate a unique visitor pass number
 function generatePassNumber() {
@@ -202,10 +239,20 @@ function generatePassNumber() {
 }
 
 
+// 
 // Register Admin with additional details
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   console.log(req.body);
 
+  // Check if an admin with the same username already exists
+  const existingAdmin = await adminCollection.findOne({ username: req.body.username });
+
+  if (existingAdmin) {
+    // Admin with the same username already exists
+    return res.status(400).send('Username already exists. Please choose a different username.');
+  }
+
+  // If the username is unique, proceed with registration
   let result = register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
   result.then(response => {
     res.send(response);
@@ -215,28 +262,29 @@ app.post('/register', (req, res) => {
   });
 });
 
-// Endpoint to get user details upon successful login
-app.get('/admindetails', verifyToken, async (req, res) => {
-  // Check if the request is coming from an authenticated admin
-  if (req.user && req.user.username) {
-    try {
-      // Fetch user details based on the username
-      const adminDetails = await adminCollection.findOne({ username: req.user.username });
 
-      if (adminDetails) {
-        // Return user details in the response
-        res.send(adminDetails);
-      } else {
-        res.status(404).send('User details not found.');
-      }
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-      res.status(500).send('Error fetching user details');
-    }
-  } else {
-    res.status(401).send('Unauthorized: Admin authentication required.');
-  }
-});
+// // Endpoint to get user details upon successful login
+// app.get('/admindetails', verifyToken, async (req, res) => {
+//   // Check if the request is coming from an authenticated admin
+//   if (req.user && req.user.username) {
+//     try {
+//       // Fetch user details based on the username
+//       const adminDetails = await adminCollection.findOne({ username: req.user.username });
+
+//       if (adminDetails) {
+//         // Return user details in the response
+//         res.send(adminDetails);
+//       } else {
+//         res.status(404).send('User details not found.');
+//       }
+//     } catch (error) {
+//       console.error('Error fetching user details:', error);
+//       res.status(500).send('Error fetching user details');
+//     }
+//   } else {
+//     res.status(401).send('Unauthorized: Admin authentication required.');
+//   }
+// });
 
 
 // Create a visitor
@@ -277,65 +325,63 @@ app.post('/createvisitorData', verifyToken, async (req, res) => {
 });
 
 
-// Visitor Login
+// Visitor login
 app.post('/visitor/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  // Perform visitor authentication logic (e.g., check against a visitors collection in MongoDB)
-  // Replace this with your actual authentication logic
-
-  const visitor = await visitorCollection.findOne({ username, password });
-  
-  if (visitor) {
-    // Generate a token for the visitor (you can use the same generateToken function as for admin)
-    const token = generateToken({ username: visitor.username, password: visitor.password });
-    res.send(token);
-  } else {
-    res.status(401).send('Visitor login failed. Invalid credentials.');
-  }
-});
-
-// Retrieve Visitor Pass Number for Authenticated Visitor
-app.get('/visitor/retrievepass', verifyToken, async (req, res) => {
-  // Check if the request is coming from an authenticated visitor
-  if (req.user && req.user.username) {
-    // Retrieve the visitor pass based on the visitor's information
-    const visitorPass = await visitorPassCollection.findOne({ visitorId: req.user.visitorId });
-
-    if (visitorPass) {
-      res.send(`Your Visitor Pass Number: ${visitorPass.passNumber}`);
-    } else {
-      res.status(404).send('Visitor pass not found.');
-    }
-  } else {
-    res.status(401).send('Unauthorized: Visitor authentication required.');
-  }
-});
-
-
-
-//update visitor
-app.patch('/updatevisitor/:id', verifyToken, async (req, res) => {
   try {
-    const objectId = new ObjectId(req.params.id);
-    const {city} = req.body;
+    const { username, password } = req.body;
+    const visitor = await visitorCollection.findOne({ username, password });
 
-    const updateResult = await db.collection('VISITOR').updateOne(
-      { _id: objectId }, 
-      { $set: {city} });
+    if (visitor) {
+      // Generate a new token
+      const newToken = generateToken({ username: visitor.username, password: visitor.password });
 
-    if (updateResult.modifiedCount === 1) {
-      res.send('Visitor data successfully updated!');
+      // Store the new token with a session identifier
+      const sessionIdentifier = generateSessionIdentifier(); // Implement this function
+      activeVisitorTokens[visitor.username] = { token: newToken, session: sessionIdentifier };
+
+      // Send the new token and session identifier in the response
+      const responseMessage = `Visitor login successful! 
+      Token: ${newToken}
+      Session: ${sessionIdentifier}`;
+      res.send(responseMessage);
     } else {
-      res.status(404).send('Visitor not found');
+      res.status(401).send('Visitor login failed. Invalid credentials.');
     }
   } catch (error) {
-    console.error('Error updating visitor data:', error);
-    res.status(500).send('Error updating visitor data');
+    console.error('Error in visitor login route:', error);
+    res.status(500).send('An error occurred during visitor login.');
   }
 });
 
+// Retrieve Visitor Pass for Authenticated Visitor
+app.get('/visitor/retrievepass', verifyToken, async (req, res) => {
+  try {
+    // Check if the request is coming from an authenticated visitor
+    if (req.user && req.user.username) {
+      // Check if the stored session identifier matches the one in the request
+      const storedSessionIdentifier = activeVisitorTokens[req.user.username]?.session;
+      const requestSessionIdentifier = req.headers['x-session-identifier']; // Include session identifier in the request headers
 
+      if (storedSessionIdentifier !== requestSessionIdentifier) {
+        return res.status(401).send('Unauthorized: Session expired. Please login again!');
+      }
+
+      // Retrieve the visitor pass based on the visitor's information
+      const visitorPass = await visitorPassCollection.findOne({ visitorId: req.user.visitorId });
+
+      if (visitorPass) {
+        res.send(`Your Visitor Pass Number: ${visitorPass.passNumber}`);
+      } else {
+        res.status(404).send('Visitor pass not found.');
+      }
+    } else {
+      res.status(401).send('Unauthorized: Visitor authentication required.');
+    }
+  } catch (error) {
+    console.error('Error retrieving visitor pass:', error);
+    res.status(500).send('Error retrieving visitor pass');
+  }
+});
 
 //Delete a visitor
 app.delete('/deletevisitor/:id', verifyToken, async (req, res) => {

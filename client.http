@@ -1,41 +1,43 @@
 ### GOODLUCK ###
+### Admin Registration ###
 POST http://localhost:4000/register
 Content-Type: application/json
 
 {
-  "username": "MihaelJ",
+  "username": "MichaelJ",
   "password": "Michael11",
   "name": "Michael James",
-  "age":"34",
-  "gender":"male"
+  "age": "34",
+  "gender": "male"
 }
-###
 
+### Admin Login ###
 POST http://localhost:4000/login
 Content-Type: application/json
 
 {
-  "username": "MihaelJ",
+  "username": "MichaelJ",
   "password": "Michael11"
 }
-###
 
+### Issue Visitor Pass ###
 POST http://localhost:4000/issueVisitorPass
-Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTg4N2EwZmM5YmY1YTFkNDkyZjM5YjUiLCJ1c2VybmFtZSI6Ik1paGFlbEoiLCJwYXNzd29yZCI6Ik1pY2hhZWwxMSIsIm5hbWUiOiJNaWNoYWVsIEphbWVzIiwiYWdlIjoiMzQiLCJnZW5kZXIiOiJtYWxlIiwiaWF0IjoxNzAzNTA1NjgxfQ.q5R7k25ZC6I9T1-aCX1EKagnQ-LmUuupDreQrykd4QA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NThhZTA5MmU2OTAxNzlkNjU0M2U1ODIiLCJ1c2VybmFtZSI6Ik1pY2hhZWxKIiwicGFzc3dvcmQiOiJNaWNoYWVsMTEiLCJuYW1lIjoiTWljaGFlbCBKYW1lcyIsImFnZSI6IjM0IiwiZ2VuZGVyIjoibWFsZSIsImlhdCI6MTcwMzYwMjQxM30.41-P-fwKm9U6hQxdaNWebh3pjWtZtILnI8AvBBTeRlw
+x-session-identifier: Session_1703602413180_720
 Content-Type: application/json
 
 {
-  
   "visitorId": "011",
   "name": "Maria George"
 }
-###
 
+### Get Visitors ###
 GET http://localhost:4000/visitors
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhNDQ2ZGM1OTA0ZWE0NDdmM2FhZGIiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3ODMyNDAyfQ.Y1d8y_KJKQGBUvBJQNpczMLWnYtZGNfsjGRlhb7mZj0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NThhZTA5MmU2OTAxNzlkNjU0M2U1ODIiLCJ1c2VybmFtZSI6Ik1pY2hhZWxKIiwicGFzc3dvcmQiOiJNaWNoYWVsMTEiLCJuYW1lIjoiTWljaGFlbCBKYW1lcyIsImFnZSI6IjM0IiwiZ2VuZGVyIjoibWFsZSIsImlhdCI6MTcwMzYwMjQxM30.41-P-fwKm9U6hQxdaNWebh3pjWtZtILnI8AvBBTeRlw
+x-session-identifier: Session_1703602413180_720
 Content-Type: application/json
-###
 
+### Visitor Login ###
 POST http://localhost:4000/visitor/login
 Content-Type: application/json
 
@@ -43,12 +45,14 @@ Content-Type: application/json
   "username": "Maria",
   "password": "MariaG12"
 }
-###
 
+### Retrieve Visitor Pass ###
 GET http://localhost:4000/visitor/retrievepass
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hcmlhIiwicGFzc3dvcmQiOiJNYXJpYUcxMiIsImlhdCI6MTcwMzUwNTg0M30.SfrZ-JNMxekjkv-mXWcqZaArtJhMnaQRxjUwOn2RbVo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hcmlhIiwicGFzc3dvcmQiOiJNYXJpYUcxMiIsImlhdCI6MTcwMzYwMjQ2OH0.Ov3Hlt3vDz9A4cSJ0h7M9dnxyBHJ71Le6oyrIKN7jW8
+x-session-identifier: Session_1703602468642_616
 Content-Type: application/json
 ###
+
 GET https://prisonvms.azurewebsites.net/loginpage
 Content-Type: application/json
 ###
