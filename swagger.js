@@ -32,25 +32,27 @@
  *       200:
  *         description: Admin login successful.
  *       401:
- *         description: Invalid credentials. Please try again.
+ *         description: Unauthorized: Admin authentication required.
  *       500:
  *         description: An error occurred during login.
  */
 
+
+
+/**
 /**
  * @openapi
  * /issueVisitorPass:
  *   post:
  *     summary: Issue a visitor pass for an authenticated admin.
  *     security:
- * parameters:
- *       - in: header
- *         name: x-session-identifier
- *         schema:
- *           type: string
- *         required: true
- *         description: Session identifier for authentication.
- * security:
+ *       - parameters:
+ *           - in: header
+ *             name: x-session-identifier
+ *             schema:
+ *               type: string
+ *             required: true
+ *             description: Session identifier for authentication.
  *       - BearerAuth: []
  *       - SessionIdentifier: []
  *     requestBody:
@@ -65,6 +67,7 @@
  *       500:
  *         description: An error occurred issuing the visitor pass.
  */
+
 
 /**
  * @openapi
@@ -158,18 +161,19 @@
  *         description: An error occurred during visitor login.
  */
 /**
+/**
  * @openapi
  * /visitor/retrievepass:
  *   get:
  *     summary: Retrieve the visitor pass for an authenticated visitor.
- * parameters:
+ *     parameters:
  *       - in: header
  *         name: x-session-identifier
  *         schema:
  *           type: string
  *         required: true
  *         description: Session identifier for authentication.   
- * security:
+ *     security:
  *       - BearerAuth: []
  *       - SessionIdentifier: []
  *     responses:
@@ -181,23 +185,21 @@
  *         description: Visitor pass not found.
  *       500:
  *         description: Error retrieving visitor pass.
- *     security:
- *       - BearerAuth: []
- *     
+ */
 
 /**
  * @openapi
  * /visitors:
  *   get:
  *     summary: View all visitors (protected route for authenticated admins only).
- * parameters:
+ *     parameters:
  *       - in: header
  *         name: x-session-identifier
  *         schema:
  *           type: string
  *         required: true
  *         description: Session identifier for authentication.
- * security:
+ *     security:
  *       - BearerAuth: []
  *       - SessionIdentifier: []
  *     responses:
