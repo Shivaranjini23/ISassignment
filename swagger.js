@@ -66,7 +66,7 @@
  *               type: string
  *             required: true
  *             description: Session identifier for authentication.
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *       - SessionIdentifier: []
  *     requestBody:
  *       # ... (Your request body details)
@@ -122,7 +122,7 @@
  *     summary: Create a new visitor with details.
  *     tags: [Admin]
  *     security:
- *       - BearerAuth: []  
+ *       - bearerAuth: []  
  *     requestBody:
  *       required: true
  *       content:
@@ -191,7 +191,7 @@
  *         required: true
  *         description: Session identifier for authentication.   
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *       - SessionIdentifier: []
  *     responses:
  *       200:
@@ -218,7 +218,7 @@
  *         required: true
  *         description: Session identifier for authentication.
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *       - SessionIdentifier: []
  *     responses:
  *       200:

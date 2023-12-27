@@ -22,8 +22,8 @@ Content-Type: application/json
 
 ### Issue Visitor Pass ###
 POST http://localhost:4000/issueVisitorPass
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NThhZTA5MmU2OTAxNzlkNjU0M2U1ODIiLCJ1c2VybmFtZSI6Ik1pY2hhZWxKIiwicGFzc3dvcmQiOiJNaWNoYWVsMTEiLCJuYW1lIjoiTWljaGFlbCBKYW1lcyIsImFnZSI6IjM0IiwiZ2VuZGVyIjoibWFsZSIsImlhdCI6MTcwMzYwMjQxM30.41-P-fwKm9U6hQxdaNWebh3pjWtZtILnI8AvBBTeRlw
-x-session-identifier: Session_1703602413180_720
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NThhZTA5MmU2OTAxNzlkNjU0M2U1ODIiLCJ1c2VybmFtZSI6Ik1pY2hhZWxKIiwicGFzc3dvcmQiOiJNaWNoYWVsMTEiLCJuYW1lIjoiTWljaGFlbCBKYW1lcyIsImFnZSI6IjM0IiwiZ2VuZGVyIjoibWFsZSIsImlhdCI6MTcwMzYxNjU1Nn0.c7hqcTHqdpqnOBfgDxot6LWlmeMwV0nw6jVbTvL_Xsc
+x-session-identifier: Session_1703616556138_302
 Content-Type: application/json
 
 {
@@ -33,8 +33,8 @@ Content-Type: application/json
 
 ### Get Visitors ###
 GET http://localhost:4000/visitors
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NThhZTA5MmU2OTAxNzlkNjU0M2U1ODIiLCJ1c2VybmFtZSI6Ik1pY2hhZWxKIiwicGFzc3dvcmQiOiJNaWNoYWVsMTEiLCJuYW1lIjoiTWljaGFlbCBKYW1lcyIsImFnZSI6IjM0IiwiZ2VuZGVyIjoibWFsZSIsImlhdCI6MTcwMzYwMjQxM30.41-P-fwKm9U6hQxdaNWebh3pjWtZtILnI8AvBBTeRlw
-x-session-identifier: Session_1703602413180_720
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NThhZTA5MmU2OTAxNzlkNjU0M2U1ODIiLCJ1c2VybmFtZSI6Ik1pY2hhZWxKIiwicGFzc3dvcmQiOiJNaWNoYWVsMTEiLCJuYW1lIjoiTWljaGFlbCBKYW1lcyIsImFnZSI6IjM0IiwiZ2VuZGVyIjoibWFsZSIsImlhdCI6MTcwMzYxNjU1Nn0.c7hqcTHqdpqnOBfgDxot6LWlmeMwV0nw6jVbTvL_Xsc
+x-session-identifier: Session_1703616556138_302
 Content-Type: application/json
 
 ### Visitor Login ###
@@ -48,12 +48,8 @@ Content-Type: application/json
 
 ### Retrieve Visitor Pass ###
 GET http://localhost:4000/visitor/retrievepass
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hcmlhIiwicGFzc3dvcmQiOiJNYXJpYUcxMiIsImlhdCI6MTcwMzYwMjQ2OH0.Ov3Hlt3vDz9A4cSJ0h7M9dnxyBHJ71Le6oyrIKN7jW8
-x-session-identifier: Session_1703602468642_616
-Content-Type: application/json
-###
-
-GET https://prisonvms.azurewebsites.net/loginpage
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hcmlhIiwicGFzc3dvcmQiOiJNYXJpYUcxMiIsImlhdCI6MTcwMzYxNjY1Mn0.-QnOOWvPmW2OQXWrvS-FAz4OqZ3hgELoomPQH5GngOY
+x-session-identifier: Session_1703616652293_677
 Content-Type: application/json
 ###
 
