@@ -69,7 +69,8 @@
  *       - bearerAuth: []
  *       - SessionIdentifier: []
  *     requestBody:
- *       # ... (Your request body details)
+ *            "visitorId": "011",
+              "name": "Maria George"
  *     responses:
  *       200:
  *         description: Visitor pass issued successfully.
