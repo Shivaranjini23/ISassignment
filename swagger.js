@@ -24,12 +24,15 @@
 
 
 /**
- * @swagger
+ * @openapi
  * /login:
  *   post:
- *     summary: Authenticate admin and generate a new token.
- *     tags: [Admin]
+ *     summary: Admin login
+ *     description: Log in as an admin to obtain an authentication token.
+ *     tags:
+ *       - Admin
  *     requestBody:
+ *       description: Admin credentials for login
  *       required: true
  *       content:
  *         application/json:
@@ -38,48 +41,56 @@
  *             properties:
  *               username:
  *                 type: string
+ *                 description: Admin username.
  *               password:
  *                 type: string
+ *                 description: Admin password.
  *     responses:
  *       200:
- *         description: Admin login successful.
+ *         description: Successful login response
  *       401:
- *         description: Unauthorized: Admin authentication required.
+ *         description: Invalid credentials. Please try again.
  *       500:
- *         description: An error occurred during login.
+ *         description: Internal server error
  */
 
 
 
 /**
 /**
- * @swagger
+ * @openapi
  * /issueVisitorPass:
  *   post:
- *     summary: Issue a visitor pass for an authenticated admin.
- *     tags: [Admin]
+ *     summary: Issue visitor pass for authenticated admin
+ *     description: Issue a visitor pass for an authenticated admin. Requires admin authentication.
+ *     tags:
+ *       - Admin
  *     security:
- *       - parameters:
- *           - in: header
- *             name: x-session-identifier
- *             schema:
- *               type: string
- *             required: true
- *             description: Session identifier for authentication.
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *       - SessionIdentifier: []
  *     requestBody:
- *            "visitorId": "011",
-              "name": "Maria George"
+ *       description: Visitor details for pass issuance
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorId:
+ *                 type: string
+ *                 description: ID of the visitor for whom the pass is issued.
+ *               visitor Name:
+ *                 type: string
+ *                 description: Name of the visitor for whom the pass is issued.
  *     responses:
  *       200:
- *         description: Visitor pass issued successfully.
+ *         description: Successful response
  *       401:
- *         description: Unauthorized: Admin authentication required or session expired.
+ *         description: Unauthorized - Admin authentication required or session expired
  *       404:
  *         description: Visitor not found. Please register the visitor first.
  *       500:
- *         description: An error occurred issuing the visitor pass.
+ *         description: Internal server error
  */
 
 
@@ -179,46 +190,41 @@
  */
 /**
 /**
- * @swagger
+ * @openapi
  * /visitor/retrievepass:
  *   get:
- *     summary: Retrieve the visitor pass for an authenticated visitor.
- *     tags: 
+ *     summary: Retrieve visitor pass information
+ *     description: Retrieve the visitor pass based on the visitor's information.
+ *     tags:
  *       - Visitor
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Visitor pass retrieved successfully.
+ *         description: Successful response
  *       401:
- *         description: Unauthorized: Visitor authentication required.
+ *         description: Unauthorized - Session expired or visitor authentication required
  *       404:
- *         description: Visitor pass not found.
+ *         description: Visitor pass not found
  *       500:
- *         description: Error retrieving visitor pass.
+ *         description: Internal server error
  */
 
 /**
- * @swagger
+ * @openapi
  * /visitors:
  *   get:
- *     summary: View all visitors (protected route for authenticated admins only).
- *     tags: [Admin]
- *     parameters:
- *       - in: header
- *         name: x-session-identifier
- *         schema:
- *           type: string
- *         required: true
- *         description: Session identifier for authentication.
+ *     summary: View all visitors (protected route for authenticated admins only)
+ *     description: Retrieve a list of all visitors. Requires admin authentication.
+ *     tags:
+ *       - Admin
  *     security:
- *       - bearerAuth: []
- *       - SessionIdentifier: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Visitors retrieved successfully.
+ *         description: Successful response
  *       401:
- *         description: Unauthorized: Admin authentication required.
+ *         description: Unauthorized - Admin authentication required or session expired
  *       500:
- *         description: Error viewing visitors.
+ *         description: Internal server error
  */
