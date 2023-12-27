@@ -1,6 +1,6 @@
 ### GOODLUCK ###
 ### Admin Registration ###
-POST https://prisonvms.azurewebsites.net/api-docs/register
+POST http://localhost:4000/register
 Content-Type: application/json
 
 {

@@ -67,7 +67,7 @@
     "setprototypeof": "^1.2.0",
     "side-channel": "^1.0.4",
     "statuses": "^2.0.1",
-    "swagger-jsdoc": "^6.2.8",
+    "swagger-jsdoc": "^7.0.0",
     "swagger-ui-dist": "^5.10.5",
     "swagger-ui-express": "^5.0.0",
     "toidentifier": "^1.0.1",
