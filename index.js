@@ -394,10 +394,6 @@ app.post('/visitor/login', async (req, res) => {
   }
 });
 
-
-
-
-
 // Retrieve Visitor Pass for Authenticated Visitor
 app.get('/visitor/retrievepass', verifyToken, async (req, res) => {
   try {
