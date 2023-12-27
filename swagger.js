@@ -227,17 +227,3 @@
  *       500:
  *         description: Internal server error
  */
-
-/**
- * @swagger
- * /deletevisitor/{id}:
- *   delete:
- *     summary: Delete a visitor
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         description: ID of the visitor to delete
-*/
