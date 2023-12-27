@@ -183,7 +183,8 @@
  * /visitor/retrievepass:
  *   get:
  *     summary: Retrieve the visitor pass for an authenticated visitor.
- *     tags: [Visitor]
+ *     tags: 
+ *       - Visitor
  *     security:
  *       - bearerAuth: []
  *     responses:
