@@ -196,10 +196,10 @@ function verifyToken(req, res, next) {
 }
 
 
-// Serve the login page
-app.get('/loginpage', (req, res) => {
-  res.sendFile(path.join(__dirname, 'login.html'));
-});
+// // Serve the login page
+// app.get('/loginpage', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'login.html'));
+// });
 
 // Function to generate a session identifier
 function generateSessionIdentifier() {

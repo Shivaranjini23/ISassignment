@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### Admin Login ###
-POSThttp://localhost:4000/login
+POST http://localhost:4000/login
 Content-Type: application/json
 
 {
