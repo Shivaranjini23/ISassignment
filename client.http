@@ -1,6 +1,6 @@
 ### GOODLUCK ###
 ### Admin Registration ###
-POST http://localhost:4000/register
+POST https://prisonvms.azurewebsites.net/api-docs/register
 Content-Type: application/json
 
 {
@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### Admin Login ###
-POST http://localhost:4000/login
+POST https://prisonvms.azurewebsites.net/api-docs/login
 Content-Type: application/json
 
 {
@@ -53,34 +53,12 @@ x-session-identifier: Session_1703616652293_677
 Content-Type: application/json
 ###
 
+###swagger page###
 GET https://prisonvms.azurewebsites.net/api-docs
 Content-Type: application/json
 ###
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-GET https://prisonvms.azurewebsites.net/admindetails
-Content-Type: application/json
-###
-
-
-
-
- 
-###
+###create new visitor###
 POST http://localhost:3000/createvisitorData
 Content-Type: application/json
 Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhNDQ2ZGM1OTA0ZWE0NDdmM2FhZGIiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3ODMyNDAyfQ.Y1d8y_KJKQGBUvBJQNpczMLWnYtZGNfsjGRlhb7mZj0
@@ -96,38 +74,3 @@ Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhNDQ2ZG
 }
 ###
 
-
-PATCH  https://prisonvms.azurewebsites.net/649a476a418f91102380abe6
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDk3Mzc5YjI0OWQ5ZTNmYzdlZDQ4ZTUiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3NjM1MDg1fQ.XP_Lhl8zP_LQW_edNNcHH6xG950qsnJAOTquu0Qo9ek
-
-{
-  "city": "Texas"
-}
-
-###
-DELETE  https://prisonvms.azurewebsites.net/649a476a418f91102380abe6
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDk3Mzc5YjI0OWQ5ZTNmYzdlZDQ4ZTUiLCJ1c2VybmFtZSI6Ik1pa2F5bGEiLCJwYXNzd29yZCI6IktheWxhMTIzIiwiaWF0IjoxNjg3NjM1MDg1fQ.XP_Lhl8zP_LQW_edNNcHH6xG950qsnJAOTquu0Qo9ek
-###
-
-GET https://prisonvms.azurewebsites.net/admins
-Content-Type: application/json
-###
-
-
-GET https://prisonvms.azurewebsites.net/prisoner
-Content-Type: application/json
-###
-
-GET https://prisonvms.azurewebsites.net/cell
-Content-Type: application/json
-###
-
-GET https://prisonvms.azurewebsites.net/emergency
-Content-Type: application/json
-###
-
-GET https://prisonvms.azurewebsites.net/casedetail
-Content-Type: application/json
-###

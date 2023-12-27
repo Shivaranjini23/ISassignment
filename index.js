@@ -466,88 +466,88 @@ app.get('/visitors', verifyToken, async (req, res) => {
 
 
 
-//Delete a visitor
-app.delete('/deletevisitor/:id', verifyToken, async (req, res) => {
-  const objectId = new ObjectId(req.params);
+// //Delete a visitor
+// app.delete('/deletevisitor/:id', verifyToken, async (req, res) => {
+//   const objectId = new ObjectId(req.params);
   
 
-  try {
-    const deleteResult = await db.collection('VISITOR').deleteOne({ _id:objectId });
+//   try {
+//     const deleteResult = await db.collection('VISITOR').deleteOne({ _id:objectId });
 
-    if (deleteResult.deletedCount === 1) {
-      res.send('Visitor deleted successfully');
-    } else {
-      res.status(404).send('Visitor not found');
-    }
-  } catch (error) {
-    console.error('Error deleting visitor:', error);
-    res.status(500).send('Error deleting visitor');
-  }
-});
-
-
-// View all admins
-app.get('/admins', async (req, res) => {
-  try {
-    const db = client.db('PRISON_VMS');
-    const prisoner = await db.collection('ADMIN').find().toArray();
-    res.send(prisoner);
-  } catch (error) {
-    res.status(500).send('Error viewing admins');
-  }
-});
+//     if (deleteResult.deletedCount === 1) {
+//       res.send('Visitor deleted successfully');
+//     } else {
+//       res.status(404).send('Visitor not found');
+//     }
+//   } catch (error) {
+//     console.error('Error deleting visitor:', error);
+//     res.status(500).send('Error deleting visitor');
+//   }
+// });
 
 
-// View all prisoner
-app.get('/prisoner', async (req, res) => {
-  try {
-    const db = client.db('PRISON_VMS');
-    const prisoner = await db.collection('PRISONER').find().toArray();
-    res.send(prisoner);
-  } catch (error) {
-    res.status(500).send('Error viewing prisoner');
-  }
-});
+// // View all admins
+// app.get('/admins', async (req, res) => {
+//   try {
+//     const db = client.db('PRISON_VMS');
+//     const prisoner = await db.collection('ADMIN').find().toArray();
+//     res.send(prisoner);
+//   } catch (error) {
+//     res.status(500).send('Error viewing admins');
+//   }
+// });
 
 
-// View all cell
-app.get('/cell', async (req, res) => {
-  try {
-    const db = client.db('PRISON_VMS');
-    const cell = await db.collection('CELL').find().toArray();
-    res.send(cell);
-  } catch (error) {
-    res.status(500).send('Error viewing cell');
-  }
-});
+// // View all prisoner
+// app.get('/prisoner', async (req, res) => {
+//   try {
+//     const db = client.db('PRISON_VMS');
+//     const prisoner = await db.collection('PRISONER').find().toArray();
+//     res.send(prisoner);
+//   } catch (error) {
+//     res.status(500).send('Error viewing prisoner');
+//   }
+// });
 
 
-// View all emergency_contact
-app.get('/emergency', async (req, res) => {
-  try {
-    const db = client.db('PRISON_VMS');
-    const emergency = await db.collection('EMERGENCY_CONTACT').find().toArray();
-    res.send(emergency);
-  } catch (error) {
-    res.status(500).send('Error viewing emergency_contact');
-  }
-});
+// // View all cell
+// app.get('/cell', async (req, res) => {
+//   try {
+//     const db = client.db('PRISON_VMS');
+//     const cell = await db.collection('CELL').find().toArray();
+//     res.send(cell);
+//   } catch (error) {
+//     res.status(500).send('Error viewing cell');
+//   }
+// });
 
 
-// View all case_details
-app.get('/casedetail', async (req, res) => {
-  try {
-    const db = client.db('PRISON_VMS');
-    const casedetail = await db.collection('CASE_DETAILS').find().toArray();
-    res.send(casedetail);
-  } catch (error) {
-    res.status(500).send('Error viewing emergency_contact');
-  }
-});
+// // View all emergency_contact
+// app.get('/emergency', async (req, res) => {
+//   try {
+//     const db = client.db('PRISON_VMS');
+//     const emergency = await db.collection('EMERGENCY_CONTACT').find().toArray();
+//     res.send(emergency);
+//   } catch (error) {
+//     res.status(500).send('Error viewing emergency_contact');
+//   }
+// });
 
-app.use(express.json())
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// // View all case_details
+// app.get('/casedetail', async (req, res) => {
+//   try {
+//     const db = client.db('PRISON_VMS');
+//     const casedetail = await db.collection('CASE_DETAILS').find().toArray();
+//     res.send(casedetail);
+//   } catch (error) {
+//     res.status(500).send('Error viewing emergency_contact');
+//   }
+// });
+
+// app.use(express.json())
+
+// // Start the server
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
