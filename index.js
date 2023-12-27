@@ -194,16 +194,19 @@ app.post('/login', async (req, res) => {
 
       activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
 
-      const responseMessage = `Admin login successful! 
-        Token: ${newToken}
-        Session: ${sessionIdentifier}`;
-      res.status(200).send(responseMessage);
+      const responseData = {
+        message: 'Admin login successful!',
+        token: newToken,
+        session: sessionIdentifier
+      };
+
+      res.status(200).json(responseData);
     } else {
-      res.status(401).send("Invalid credentials. Please try again.");
+      res.status(401).json({ message: "Invalid credentials. Please try again." });
     }
   } catch (error) {
     console.error('Error in login route:', error);
-    res.status(500).send("An error occurred during login.");
+    res.status(500).json({ message: "An error occurred during login." });
   }
 });
 
