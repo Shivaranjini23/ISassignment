@@ -21,8 +21,7 @@
  *   - name: Visitor
  *     description: Visitor operations
  */
-
-
+ 
 /**
  * @openapi
  * /login:
@@ -79,7 +78,7 @@
  *               visitorId:
  *                 type: string
  *                 description: ID of the visitor for whom the pass is issued.
- *               visitor Name:
+ *               visitorName:
  *                 type: string
  *                 description: Name of the visitor for whom the pass is issued.
  *     responses:
@@ -188,7 +187,7 @@
  *       500:
  *         description: An error occurred during visitor login.
  */
-/**
+
 /**
  * @openapi
  * /visitor/retrievepass:
@@ -228,3 +227,17 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /deletevisitor/{id}:
+ *   delete:
+ *     summary: Delete a visitor
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the visitor to delete
+*/
