@@ -68,6 +68,7 @@
     "side-channel": "^1.0.4",
     "statuses": "^2.0.1",
     "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-dist": "^5.10.5",
     "swagger-ui-express": "^5.0.0",
     "toidentifier": "^1.0.1",
     "type-is": "^1.6.18",

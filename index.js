@@ -98,45 +98,45 @@ const visitorPassCollection = db.collection('VISITORPASS')
 
 /**login admin function*/
 async function login(reqUsername, reqPassword) {
-  return adminCollection.findOne({ username: reqUsername, password: reqPassword })
-    .then(matchUsers => {
-      if (!matchUsers) {
-        return {
-          success: false,
-          message: "Admin not found!"
-        };
-      } else {
-        return {
-          success: true,
-          users: matchUsers
-        };
-      }
-    })
-    .catch(error => {
-        console.error('Error in login:', error);
-        return {
-          success: false,
-          message: "An error occurred during login."
-        };
-      });
+  try {
+    const matchUsers = await adminCollection.findOne({ username: reqUsername, password: reqPassword });
+
+    if (!matchUsers) {
+      return {
+        success: false,
+        message: "Admin not found!"
+      };
+    } else {
+      return {
+        success: true,
+        users: matchUsers
+      };
+    }
+  } catch (error) {
+    console.error('Error in login:', error);
+    return {
+      success: false,
+      message: "An error occurred during login."
+    };
+  }
 }
 
 /**create admin function */
 async function register(reqUsername, reqPassword, reqName, reqAge, reqGender) {
-  return adminCollection.insertOne({
-    username: reqUsername,
-    password: reqPassword,
-    name: reqName,
-    age: reqAge,
-    gender: reqGender,
-  })
-    .then(() => {
-      return "Registration successful!";
-    })
-    .catch(error => {
-      console.error('Registration failed:', error);
-      return "Error encountered!";
+  try {
+    await adminCollection.insertOne({
+      username: reqUsername,
+      password: reqPassword,
+      name: reqName,
+      age: reqAge,
+      gender: reqGender,
     });
+
+    return "Registration successful!";
+  } catch (error) {
+    console.error('Registration failed:', error);
+    return "Error encountered!";
+  }
 }
 
 
