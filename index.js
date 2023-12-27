@@ -10,6 +10,10 @@ const port = process.env.PORT || 4000;
 // Declare global data structures to store active tokens
 const activeTokens = {}; // For admin tokens
 const activeVisitorTokens = {}; // For visitor tokens
+const cors = require('cors');
+
+// Enable CORS
+app.use(cors());
 
 
 const options = {
