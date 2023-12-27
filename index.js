@@ -188,7 +188,7 @@ app.post('/login', async (req, res) => {
         const responseMessage = `Admin login successful! 
          Token: ${newToken}
          Session: ${sessionIdentifier}`;
-        res.send(responseMessage);
+        res.status(200).send(responseMessage);
       } else {
         res.status(401).send("Invalid credentials. Please try again.");
       }
@@ -196,11 +196,7 @@ app.post('/login', async (req, res) => {
       console.error('Error in login route:', error);
       res.status(500).send("An error occurred during login.");
     });
-  } catch (error) {
-    console.error('Error in login route:', error);
-    res.status(500).send("An error occurred during login.");
-  }
-});
+  } 
 
 // Issue Visitor Pass for Authenticated Admin
 app.post('/issueVisitorPass', verifyToken, async (req, res) => {
