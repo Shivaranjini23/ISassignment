@@ -11,6 +11,12 @@ const port = process.env.PORT || 4000;
 const activeTokens = {}; // For admin tokens
 const activeVisitorTokens = {}; // For visitor tokens
 const cors = require('cors');
+const ejs = require('ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+
+
+
 
 // Enable CORS
 app.use(cors());
@@ -75,6 +81,10 @@ client.connect()
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json());
 app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
 // Define collection names
 const db = client.db('PRISON_VMS');
@@ -184,24 +194,30 @@ function generateSessionIdentifier() {
 }
 
 
-// Login Admin
-app.post('/login', (req, res) => {
-  console.log(req.body);
-
-  let result = login(req.body.username, req.body.password);
-  result.then(response => {
-    console.log(response); // Log the response received
+app.post('/login', async (req, res) => {
+  try {
+    const response = await login(req.body.username, req.body.password);
 
     if (response.success) {
-      let token = generateToken(response.users);
-      res.send("Auth Token: " + token);
+      const newToken = generateToken(response.users);
+      const sessionIdentifier = generateSessionIdentifier();
+
+      activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
+
+      const responseData = {
+        message: 'Admin login successful!',
+        token: newToken,
+        session: sessionIdentifier
+      };
+
+      res.status(200).json(responseData);
     } else {
-      res.status(401).send(response.message);
+      res.status(401).json({ message: "Invalid credentials. Please try again." });
     }
-  }).catch(error => {
+  } catch (error) {
     console.error('Error in login route:', error);
-    res.status(500).send("An error occurred during login.");
-  });
+    res.status(500).json({ message: "An error occurred during login." });
+  }
 });
 
   
