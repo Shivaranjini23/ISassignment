@@ -30,6 +30,20 @@ const options = {
       },
     ],
   },
+  components: {
+    securitySchemes: {
+      BearerAuth: {
+        type: 'apiKey',
+        name: 'Authorization',
+        in: 'header',
+      },
+      SessionIdentifier: {
+        type: 'apiKey',
+        name: 'x-session-identifier',
+        in: 'header',
+      },
+    },
+  },
   apis: ['./swagger.js'], // 
 };
 
@@ -170,33 +184,30 @@ function generateSessionIdentifier() {
 }
 
 
-// Login Admin
 app.post('/login', async (req, res) => {
   try {
-    let result = login(req.body.username, req.body.password);
-    result.then(response => {
-      if (response.success) {
-        // Generate a new token
-        const newToken = generateToken(response.users);
+    const response = await login(req.body.username, req.body.password);
 
-        // Store the new token with a session identifier
-        const sessionIdentifier = generateSessionIdentifier(); // Implement this function
-        activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
+    if (response.success) {
+      const newToken = generateToken(response.users);
+      const sessionIdentifier = generateSessionIdentifier();
 
+      activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
 
-        // Send the new token and session identifier in the response
-        const responseMessage = `Admin login successful! 
-         Token: ${newToken}
-         Session: ${sessionIdentifier}`;
-        res.status(200).send(responseMessage);
-      } else {
-        res.status(401).send("Invalid credentials. Please try again.");
-      }
-    }).catch(error => {
-      console.error('Error in login route:', error);
-      res.status(500).send("An error occurred during login.");
-    });
-  } 
+      const responseMessage = `Admin login successful! 
+        Token: ${newToken}
+        Session: ${sessionIdentifier}`;
+      res.status(200).send(responseMessage);
+    } else {
+      res.status(401).send("Invalid credentials. Please try again.");
+    }
+  } catch (error) {
+    console.error('Error in login route:', error);
+    res.status(500).send("An error occurred during login.");
+  }
+});
+
+  
 
 // Issue Visitor Pass for Authenticated Admin
 app.post('/issueVisitorPass', verifyToken, async (req, res) => {
