@@ -184,30 +184,24 @@ function generateSessionIdentifier() {
 }
 
 
-app.post('/login', async (req, res) => {
-  try {
-    const response = await login(req.body.username, req.body.password);
+// Login Admin
+app.post('/login', (req, res) => {
+  console.log(req.body);
+
+  let result = login(req.body.username, req.body.password);
+  result.then(response => {
+    console.log(response); // Log the response received
 
     if (response.success) {
-      const newToken = generateToken(response.users);
-      const sessionIdentifier = generateSessionIdentifier();
-
-      activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
-
-      const responseData = {
-        message: 'Admin login successful!',
-        token: newToken,
-        session: sessionIdentifier
-      };
-
-      res.status(200).json(responseData);
+      let token = generateToken(response.users);
+      res.send("Auth Token: " + token);
     } else {
-      res.status(401).json({ message: "Invalid credentials. Please try again." });
+      res.status(401).send(response.message);
     }
-  } catch (error) {
+  }).catch(error => {
     console.error('Error in login route:', error);
-    res.status(500).json({ message: "An error occurred during login." });
-  }
+    res.status(500).send("An error occurred during login.");
+  });
 });
 
   
