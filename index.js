@@ -111,10 +111,6 @@ app.get('/', (req, res) => {
 const db = client.db('PRISON_VMS');
 const adminCollection = db.collection ('ADMIN');
 const visitorCollection = db.collection ('VISITOR');
-const prisonerCollection = db.collection('PRISONER');
-const cellCollection = db.collection('CELL');
-const emergencyCollection = db.collection('EMERGENCY_CONTACT');
-const casedetailCollection = db.collection('CASE_DETAILS');
 const visitorPassCollection = db.collection('VISITORPASS')
 
 /**login admin function*/
