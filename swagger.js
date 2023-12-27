@@ -184,16 +184,8 @@
  *   get:
  *     summary: Retrieve the visitor pass for an authenticated visitor.
  *     tags: [Visitor]
- *     parameters:
- *       - in: header
- *         name: x-session-identifier
- *         schema:
- *           type: string
- *         required: true
- *         description: Session identifier for authentication.   
  *     security:
  *       - bearerAuth: []
- *       - SessionIdentifier: []
  *     responses:
  *       200:
  *         description: Visitor pass retrieved successfully.
