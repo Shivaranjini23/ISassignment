@@ -54,62 +54,51 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-const credentials = 'D:\\User\'s Files\\Documents\\GitHub\\ISassignment\\X509-cert-7205379504641267708.pem';
-const client = new MongoClient('mongodb+srv://cluster0.mucrtf7.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority', {
-  tlsCertificateKeyFile: credentials,
-  serverApi: ServerApiVersion.v1
-});
-
-async function connectToMongoDB() {
-  const client = new MongoClient('mongodb+srv://cluster0.mucrtf7.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority', {
-    tlsCertificateKeyFile: credentials,
-    serverApi: ServerApiVersion.v1
-  });
-
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB cluster');
-
-    const database = client.db("testDB");
-    const collection = database.collection("testCol");
-
-    // Perform actions using the client
-    const docCount = await collection.countDocuments({});
-    console.log(`Number of documents in the collection: ${docCount}`);
-
-    // Add more actions as needed
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-connectToMongoDB();
-
-// // MongoDB connection URL
-// const uri = "mongodb+srv://shivaranjini2:4f8GZeWiJmGhRlEx@cluster0.k1veqjb.mongodb.net/?retryWrites=true&w=majority";
-
-
-// // Create a new MongoClient
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   },
+// const credentials = 'D:\\User\'s Files\\Documents\\GitHub\\ISassignment\\X509-cert-7205379504641267708.pem';
+// const client = new MongoClient('mongodb+srv://cluster0.mucrtf7.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority', {
+//   tlsCertificateKeyFile: credentials,
+//   serverApi: ServerApiVersion.v1
 // });
 
-// // Connect to MongoDB
-// client.connect()
-//   .then(() => {
-//     console.log('Connected to MongoDB!');
-//   })
-//   .catch((error) => {
-//     console.error('Failed to connect to MongoDB:', error);
+// async function connectToMongoDB() {
+//   const client = new MongoClient('mongodb+srv://cluster0.mucrtf7.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority', {
+//     tlsCertificateKeyFile: credentials,
+//     serverApi: ServerApiVersion.v1
 //   });
 
- 
-  
+//   try {
+//     await client.connect();
+//     console.log('Connected to MongoDB cluster');
+
+//     const database = client.db("testDB");
+//     const collection = database.collection("testCol");
+
+//     // Perform actions using the client
+//     const docCount = await collection.countDocuments({});
+//     console.log(`Number of documents in the collection: ${docCount}`);
+
+//     // Add more actions as needed
+
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// }
+//connectToMongoDB();
+
+// MongoDB connection URL 
+const uri = "mongodb+srv://shivaranjini2:4f8GZeWiJmGhRlEx@cluster0.k1veqjb.mongodb.net/?retryWrites=true&w=majority"; 
+// Create a new MongoClient 
+const client = new MongoClient(uri, {serverApi: {version: ServerApiVersion.v1, strict: true, deprecationErrors: true, } }); 
+// Connect to MongoDB 
+client.connect() 
+  .then(() => {
+    console.log('Connected to MongoDB!'); 
+  }) 
+.catch((error) => { 
+    console.error('Failed to connect to MongoDB:', error); 
+  });
+
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -547,7 +536,7 @@ app.get('/visitors', verifyToken, async (req, res) => {
 
 // app.use(express.json())
 
-// // Start the server
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
