@@ -95,7 +95,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Welcome to Prison Visitor Management System of Group 17!')
 })
 
 // Define collection names
@@ -208,12 +208,14 @@ app.post('/login', async (req, res) => {
 
     if (response.success) {
       const newToken = generateToken(response.users);
+      const sessionIdentifier = generateSessionIdentifier();
 
-      activeTokens[response.users.username] = { token: newToken};
+      activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
 
       const responseData = {
         message: 'Admin login successful!',
         token: newToken,
+        session: sessionIdentifier
       };
 
       res.status(200).json(responseData);
