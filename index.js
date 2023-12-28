@@ -208,14 +208,12 @@ app.post('/login', async (req, res) => {
 
     if (response.success) {
       const newToken = generateToken(response.users);
-      const sessionIdentifier = generateSessionIdentifier();
 
-      activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
+      activeTokens[response.users.username] = { token: newToken};
 
       const responseData = {
         message: 'Admin login successful!',
         token: newToken,
-        session: sessionIdentifier
       };
 
       res.status(200).json(responseData);
