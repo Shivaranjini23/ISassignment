@@ -90,7 +90,7 @@ client.connect()
   });
 
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -436,7 +436,7 @@ app.get('/visitors', verifyToken, async (req, res) => {
   }
 });
 
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 
 
