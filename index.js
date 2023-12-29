@@ -4,9 +4,8 @@ const express = require('express');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const path = require('path');
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 // Declare global data structures to store active tokens
 const activeTokens = {}; // For admin tokens
 const activeVisitorTokens = {}; // For visitor tokens
@@ -41,7 +40,7 @@ const options = {
       },
     },
   },
-  apis: ['./swagger.js'], // 
+  apis: ['./index.js'], // 
 };
 
 const specs = swaggerJsdoc(options);
@@ -201,6 +200,27 @@ function generateSessionIdentifier() {
   return `Session_${timestamp}_${random}`;
 }
 
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Authenticate admin
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *        description: Admin login successful
+ *       401:
+ *        description: Invalid credentials
+ */
 
 app.post('/login', async (req, res) => {
   try {
@@ -228,8 +248,40 @@ app.post('/login', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /issueVisitorPass:
+ *   post:
+ *     summary: Issue Visitor Pass for Authenticated Admin
+ *     security:
+ *       - BearerAuth: []
+ *       - SessionIdentifier: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorId:
+ *                 type: string
+ *                 description: ID of the visitor for whom the pass is issued.
+ *               visitorName:
+ *                 type: string
+ *                 description: Name of the visitor for whom the pass is issued.
+ *     responses:
+ *       '200':
+ *         description: 'Visitor pass issued successfully'
+ *       '401':
+ *         description: 'Unauthorized: Admin authentication required.'
+ *       '403':
+ *         description: 'Unauthorized: Session expired. Please login again!'
+ *       '404':
+ *         description: 'Visitor not found. Please register the visitor first.'
+ *       '500':
+ *         description: 'Error issuing visitor pass'
+ */
 
-  
+
 
 // Issue Visitor Pass for Authenticated Admin
 app.post('/issueVisitorPass', verifyToken, async (req, res) => {
@@ -248,7 +300,7 @@ app.post('/issueVisitorPass', verifyToken, async (req, res) => {
       const requestSessionIdentifier = req.headers['x-session-identifier']; // Include session identifier in the request headers
 
       if (storedSessionIdentifier !== requestSessionIdentifier) {
-        return res.status(401).send('Unauthorized: Session expired. Please login again!');
+        return res.status(403).send('Unauthorized: Session expired. Please login again!');
       }
 
       // Place your logic here to issue a visitor pass
@@ -291,6 +343,35 @@ function generatePassNumber() {
   return `VP${timestamp}${random}`;
 }
 
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register Admin with additional details
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               age:
+ *                 type: integer
+ *               gender:
+ *                 type: string
+ *     responses:
+ *        200:
+ *         description: Registration successful!
+ *        400:
+ *         description: Username already exists. Please choose a different username.
+ *        500:
+ *         description: An error occurred during registration.
+ */
 
 // Register Admin with additional details
 app.post('/register', async (req, res) => {
@@ -314,6 +395,39 @@ app.post('/register', async (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /createvisitorData:
+ *   post:
+ *     summary: Create a visitor
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               city:
+ *                 type: string
+ *               relationship:
+ *                 type: string
+ *               visitorId:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *        description: Visitor created successfully
+ *       400:
+ *        description: Username already exists. Please choose a different username.
+ *       500:
+ *        description: An error occurred while creating the visitor
+ */
 
 
 // Create a visitor
@@ -353,6 +467,29 @@ app.post('/createvisitorData', verifyToken, async (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /visitor/login:
+ *   post:
+ *     summary: Visitor login
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *        description: Visitor login successful
+ *       401:
+ *        description: Visitor login failed. Invalid credentials.
+ *       500:
+ *        description: An error occurred during visitor login.
+ */
 
 // Visitor login
 app.post('/visitor/login', async (req, res) => {
@@ -381,6 +518,31 @@ app.post('/visitor/login', async (req, res) => {
     res.status(500).send('An error occurred during visitor login.');
   }
 });
+
+/**
+ * @swagger
+ * /visitor/retrievepass:
+ *   get:
+ *     summary: Retrieve Visitor Pass for Authenticated Visitor
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-session-identifier
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The session identifier obtained during login
+ *     responses:
+ *       '200':
+ *         description: 'Visitor pass retrieved successfully'
+ *       '401':
+ *         description: 'Unauthorized: Session expired. Please login again!'
+ *       '404':
+ *         description: 'Visitor pass not found'
+ *       '500':
+ *         description: 'Error retrieving visitor pass'
+ */
 
 // Retrieve Visitor Pass for Authenticated Visitor
 app.get('/visitor/retrievepass', verifyToken, async (req, res) => {
@@ -411,6 +573,29 @@ app.get('/visitor/retrievepass', verifyToken, async (req, res) => {
     res.status(500).send('Error retrieving visitor pass');
   }
 });
+
+/**
+ * @swagger
+ * /visitors:
+ *   get:
+ *     summary: View all visitors (protected route for authenticated admins only)
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-session-identifier
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The session identifier obtained during login
+ *     responses:
+ *       '200':
+ *         description: 'List of visitors retrieved successfully'
+ *       '401':
+ *         description: 'Unauthorized: Session expired. Please login again!'
+ *       '500':
+ *         description: 'Error viewing visitors'
+ */
 
 
 
