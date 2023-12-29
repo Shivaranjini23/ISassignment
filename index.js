@@ -14,14 +14,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const options = {
   definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Prison VMS API',
-      version: '1.0.0',
-      description: 'API documentation for Prison VMS',
-    },
+      openapi: '3.0.0',
+      servers: [
+          {
+            url: 'https://prisonvms.azurewebsites.net',
+          },
+        ],          
+      info: {
+          title: ' PRISON VMS API',
+          version: '1.0.0',
+      },
   },
-  apis: ['./swagger.js'], // Update this to the correct path
+  apis: ['./swagger.js'],
 };
 
 const specs = swaggerJsdoc(options);
