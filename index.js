@@ -20,30 +20,12 @@ const options = {
       version: '1.0.0',
       description: 'API documentation for Prison VMS',
     },
-    servers: [
-      {
-        url: 'https://prisonvms.azurewebsites.net/api-docs',
-      },
-    ],
   },
-  components: {
-    securitySchemes: {
-      BearerAuth: {
-        type: 'apiKey',
-        name: 'Authorization',
-        in: 'header',
-      },
-      SessionIdentifier: {
-        type: 'apiKey',
-        name: 'x-session-identifier',
-        in: 'header',
-      },
-    },
-  },
-  apis: ['./index.js'], // 
+  apis: ['./index.js'], // Update this to the correct path
 };
 
 const specs = swaggerJsdoc(options);
+
 // const credentials = 'D:\\User\'s Files\\Documents\\GitHub\\ISassignment\\X509-cert-7205379504641267708.pem';
 // const client = new MongoClient('mongodb+srv://cluster0.mucrtf7.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority', {
 //   tlsCertificateKeyFile: credentials,
@@ -216,9 +198,9 @@ function generateSessionIdentifier() {
  *               password:
  *                 type: string
  *     responses:
- *       200:
+ *       '200':
  *        description: Admin login successful
- *       401:
+ *       '401':
  *        description: Invalid credentials
  */
 
