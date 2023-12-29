@@ -114,7 +114,7 @@ async function login(reqUsername, reqPassword) {
   }
 }
 
-/**create admin function */
+/** Create admin function */
 async function register(reqUsername, reqPassword, reqName, reqAge, reqGender) {
   try {
     await adminCollection.insertOne({
@@ -125,19 +125,26 @@ async function register(reqUsername, reqPassword, reqName, reqAge, reqGender) {
       gender: reqGender,
     });
 
+    // If the insertion is successful, return a success message or any other desired response.
     return "Registration successful!";
   } catch (error) {
-    console.error('Registration failed:', error);
-    return "Error encountered!";
+    console.error('Error during registration:', error);
+
+    // Handle the error and return an appropriate error message.
+    if (error.code === 11000) {
+      // Duplicate key error (unique constraint violation), handle accordingly.
+      return "Username already exists. Please choose a different username.";
+    } else {
+      return "An error occurred during registration.";
+    }
   }
 }
 
-
 function generateToken(userData) {
   const token = jwt.sign(userData, 'inipassword');
-  return token
-
+  return token;
 }
+
 
 const jwtSecret = 'inipassword';
 
@@ -291,7 +298,7 @@ app.post('/register', async (req, res) => {
   }
 
   // If the username is unique, proceed with registration
-  let result = register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
+  let result = await register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
   result.then(response => {
     res.send(response);
   }).catch(error => {
