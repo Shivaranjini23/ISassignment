@@ -5,10 +5,10 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const app = express();
+const ejs = require('ejs');
 const port = process.env.PORT || 3000;
 // Declare global data structures to store active tokens
 const activeTokens = {}; // For admin tokens
-const activeVisitorTokens = {}; // For visitor tokens
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -87,58 +87,129 @@ app.get('/', (req, res) => {
 const db = client.db('PRISON_VMS');
 const adminCollection = db.collection ('ADMIN');
 const visitorCollection = db.collection ('VISITOR');
-const visitorPassCollection = db.collection('VISITORPASS')
+const visitorPassCollection = db.collection('VISITORPASS');
+const securityCollection = db.collection('SECURITY');
+const hostCollection = db.collection('HOST');
 
-/**login admin function*/
-async function login(reqUsername, reqPassword) {
+
+/** Create security function */
+async function registerSecurity(reqUsername, reqPassword, reqName, reqAge, reqGender) {
   try {
-    const matchUsers = await adminCollection.findOne({ username: reqUsername, password: reqPassword });
-
-    if (!matchUsers) {
-      return {
-        success: false,
-        message: "Admin not found!"
-      };
-    } else {
-      return {
-        success: true,
-        users: matchUsers
-      };
-    }
-  } catch (error) {
-    console.error('Error in login:', error);
-    return {
-      success: false,
-      message: "An error occurred during login."
-    };
-  }
-}
-
-/** Create admin function */
-async function register(reqUsername, reqPassword, reqName, reqAge, reqGender) {
-  try {
-    await adminCollection.insertOne({
+    await securityCollection.insertOne({
       username: reqUsername,
       password: reqPassword,
       name: reqName,
       age: reqAge,
       gender: reqGender,
+      role: 'security',
+      approvalStatus: true, // Security registration is automatically approved
     });
 
     // If the insertion is successful, return a success message or any other desired response.
-    return "Registration successful!";
+    return "Security registration successful!";
   } catch (error) {
-    console.error('Error during registration:', error);
+    console.error('Error during security registration:', error);
 
     // Handle the error and return an appropriate error message.
     if (error.code === 11000) {
       // Duplicate key error (unique constraint violation), handle accordingly.
       return "Username already exists. Please choose a different username.";
     } else {
-      return "An error occurred during registration.";
+      return "An error occurred during security registration.";
     }
   }
 }
+
+app.post('/registerSecurity', async (req, res) => {
+  console.log(req.body);
+
+  try {
+    const response = await registerSecurity(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
+    res.send(response);
+  } catch (error) {
+    console.error('Error in security registration route:', error);
+    res.status(500).send("An error occurred during security registration.");
+  }
+});
+
+
+
+/** Create host function */
+async function registerHost(reqUsername, reqPassword, reqName, reqAge, reqGender,reqContactNum, reqRole) {
+  try {
+    await hostCollection.insertOne({
+      username: reqUsername,
+      password: reqPassword,
+      name: reqName,
+      age: reqAge,
+      gender: reqGender,
+      contactNum: reqContactNum,
+      role: reqRole,
+      approvalStatus: false, // Host registration requires approval
+    });
+
+    // If the insertion is successful, return a success message or any other desired response.
+    return "Host registration pending approval from security.";
+  } catch (error) {
+    console.error('Error during host registration:', error);
+
+    // Handle the error and return an appropriate error message.
+    if (error.code === 11000) {
+      // Duplicate key error (unique constraint violation), handle accordingly.
+      return "Username already exists. Please choose a different username.";
+    } else {
+      return "An error occurred during host registration.";
+    }
+  }
+}
+
+
+
+app.post('/registerHost', async (req, res) => {
+  console.log(req.body);
+
+  const approvalStatus = req.body.role === 'host' ? false : true;
+
+  try {
+    const response = await registerHost(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender,req.body.contactNum, req.body.role, approvalStatus);
+    res.send(response);
+  } catch (error) {
+    console.error('Error in register route:', error);
+    res.status(500).send("An error occurred during registration.");
+  }
+});
+
+// Endpoint to register admin
+app.post('/registerAdmin', async (req, res) => {
+  try {
+    // Validate admin registration request (you can add more validation logic)
+    if (!req.body.username || !req.body.password ||!req.body.name || !req.body.age || !req.body.gender ) {
+      return res.status(400).json({ error: 'Insufficient details.' });
+    }
+
+    // Check if the username is unique
+    const existingAdmin = await adminCollection.findOne({ username: req.body.username });
+    if (existingAdmin) {
+      return res.status(400).json({ error: 'Username already exists. Please choose a different username.' });
+    }
+
+    // Insert the new admin into the database with the provided role
+    const newAdmin = await adminCollection.insertOne({
+      username: req.body.username,
+      password: req.body.password,
+      name: req.body.name,
+      age: req.body.age,
+      gender: req.body.gender,
+      role: 'admin',
+    });
+
+    res.json({message: 'Admin registration successful!'});
+  } catch (error) {
+    console.error('Error during admin registration:', error);
+    res.status(500).json({ error: 'An error occurred during admin registration.' });
+  }
+});
+
 
 function generateToken(userData) {
   const token = jwt.sign(userData, 'inipassword');
@@ -179,6 +250,39 @@ function verifyToken(req, res, next) {
 }
 
 
+function verifySecurityToken(req, res, next) {
+  const header = req.headers.authorization;
+  const token = header && header.split(' ')[1];
+
+  const sessionIdentifier = req.headers['x-session-identifier'];
+
+  // Check if Authorization header exists
+  if (!header || !token || !sessionIdentifier) {
+    return res.status(401).json({ success: false, message: 'Unauthorized: Missing Authorization header or token or session identifier.' });
+  }
+
+  // Verify token
+  jwt.verify(token, jwtSecret, (err, decodedToken) => {
+    if (err) {
+      return res.status(401).json({ success: false, message: 'Unauthorized: Token validation failed.' });
+    }
+
+    // Verify session identifier (example logic, adjust as needed)
+    const storedSessionIdentifier = activeTokens[decodedToken.username]?.session;
+
+    if (storedSessionIdentifier !== sessionIdentifier) {
+      return res.status(401).json({ success: false, message: 'Unauthorized: Invalid session identifier.' });
+    }
+
+    // Set the decoded token data for later use in route handlers
+    req.security = decodedToken;
+    next();
+  });
+}
+
+module.exports = verifySecurityToken;
+
+
 // // Serve the login page
 // app.get('/loginpage', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'login.html'));
@@ -193,10 +297,87 @@ function generateSessionIdentifier() {
   return `Session_${timestamp}_${random}`;
 }
 
-
-app.post('/login', async (req, res) => {
+/** Host login function */
+async function loginHost(reqUsername, reqPassword) {
   try {
-    const response = await login(req.body.username, req.body.password);
+    const host = await hostCollection.findOne({ username: reqUsername, password: reqPassword, role: 'host', approvalStatus: true });
+
+    if (!host) {
+      return {
+        success: false,
+        message: "Host not found or not approved by security."
+      };
+    } else {
+      return {
+        success: true,
+        host: host
+      };
+    }
+  } catch (error) {
+    console.error('Error in host login:', error);
+    return {
+      success: false,
+      message: "An error occurred during host login."
+    };
+  }
+}
+
+
+app.post('/loginHost', async (req, res) => {
+  try {
+    const response = await loginHost(req.body.username, req.body.password);
+
+    if (response.success) {
+      const newToken = generateToken(response.host);
+      const sessionIdentifier = generateSessionIdentifier();
+
+      activeTokens[response.host.username] = { token: newToken, session: sessionIdentifier };
+
+      const responseData = {
+        message: 'Host login successful!',
+        token: newToken,
+        session: sessionIdentifier
+      };
+
+      res.status(200).json(responseData);
+    } else {
+      res.status(401).json({ message: response.message });
+    }
+  } catch (error) {
+    console.error('Error in host login route:', error);
+    res.status(500).json({ message: "An error occurred during host login." });
+  }
+});
+
+
+/** Login Security function */
+async function loginSecurity(reqUsername, reqPassword) {
+  try {
+    const matchUsers = await securityCollection.findOne({ username: reqUsername, password: reqPassword });
+
+    if (!matchUsers) {
+      return {
+        success: false,
+        message: "Security not found!"
+      };
+    } else {
+      return {
+        success: true,
+        users: matchUsers
+      };
+    }
+  } catch (error) {
+    console.error('Error in security login:', error);
+    return {
+      success: false,
+      message: "An error occurred during security login."
+    };
+  }
+}
+
+app.post('/loginSecurity', async (req, res) => {
+  try {
+    const response = await loginSecurity(req.body.username, req.body.password);
 
     if (response.success) {
       const newToken = generateToken(response.users);
@@ -205,7 +386,7 @@ app.post('/login', async (req, res) => {
       activeTokens[response.users.username] = { token: newToken, session: sessionIdentifier };
 
       const responseData = {
-        message: 'Admin login successful!',
+        message: `Login successful! Role: ${response.users.role}`,
         token: newToken,
         session: sessionIdentifier
       };
@@ -215,19 +396,49 @@ app.post('/login', async (req, res) => {
       res.status(401).json({ message: "Invalid credentials. Please try again." });
     }
   } catch (error) {
-    console.error('Error in login route:', error);
-    res.status(500).json({ message: "An error occurred during login." });
+    console.error('Error in security login route:', error);
+    res.status(500).json({ message: "An error occurred during security login." });
   }
 });
 
 
 
+// Endpoint for security approval (to be called after reviewing the created hosts)
+app.post('/securityApproval', verifySecurityToken, async (req, res) => {
+  try {
+    // Check if security is authenticated
+    const security = req.security;
+    if (!security) {
+      return res.status(401).json({ success: false, message: "Unauthorized: Security authentication required." });
+    }
+
+    // Process the request to approve a host
+    const usernameToApprove = req.body.username;
+
+    // Update the host's approval status in the database
+    const result = await hostCollection.updateOne(
+      { username: usernameToApprove, role: 'host' },
+      { $set: { approvalStatus: true } }
+    );
+
+    if (result.modifiedCount > 0) {
+      res.status(200).json({ success: true, message: `Host ${usernameToApprove} approved successfully.` });
+    } else {
+      res.status(404).json({ success: false, message: `Host ${usernameToApprove} not found or already approved.` });
+    }
+  } catch (error) {
+    console.error('Error in approving host:', error);
+    res.status(500).json({ success: false, message: "Error approving host." });
+  }
+});
+
+
 
 // Issue Visitor Pass for Authenticated Admin
-app.post('/issueVisitorPass', verifyToken, async (req, res) => {
+app.post('/visitor/issueVisitorPass', verifyToken, async (req, res) => {
   try {
     // Check if the request is coming from an authenticated admin
-    if (req.user && req.user.username) {
+    if (req.user && req.user.username && req.user.role === 'host') {
       // Check if the visitor is registered
       const visitor = await visitorCollection.findOne({ visitorId: req.body.visitorId });
 
@@ -274,6 +485,9 @@ app.post('/issueVisitorPass', verifyToken, async (req, res) => {
   }
 });
 
+
+
+
 // Function to generate a unique visitor pass number
 function generatePassNumber() {
   // Implement your logic to generate a unique pass number
@@ -284,32 +498,33 @@ function generatePassNumber() {
 }
 
 
+// Retrieve Visitor Pass for Authenticated Visitor
+app.post('/visitor/retrievepass', async (req, res) => {
+  try {
+    // Extract visitor ID from the request body
+    const visitorId = req.body.visitorId;
 
-// Register Admin with additional details
-app.post('/register', async (req, res) => {
-  console.log(req.body);
+    if (!visitorId) {
+      return res.status(400).send('Visitor ID is required.');
+    }
 
-  // Check if an admin with the same username already exists
-  const existingAdmin = await adminCollection.findOne({ username: req.body.username });
+    // Retrieve the visitor pass based on the visitor's information
+    const visitorPass = await visitorPassCollection.findOne({ visitorId });
 
-  if (existingAdmin) {
-    // Admin with the same username already exists
-    return res.status(400).send('Username already exists. Please choose a different username.');
+    if (visitorPass) {
+      res.send(`Visitor Pass Number for ${visitorId}: ${visitorPass.passNumber}`);
+    } else {
+      res.status(404).send('Visitor pass not found.');
+    }
+  } catch (error) {
+    console.error('Error retrieving visitor pass:', error);
+    res.status(500).send('Error retrieving visitor pass');
   }
-
-  // If the username is unique, proceed with registration
-  let result = await register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender);
-  result.then(response => {
-    res.send(response);
-  }).catch(error => {
-    console.error('Error in register route:', error);
-    res.status(500).send("An error occurred during registration.");
-  });
 });
 
 
 // Create a visitor
-app.post('/createvisitorData', verifyToken, async (req, res) => {
+app.post('/visitor/createvisitorData', verifyToken, async (req, res) => {
   const {
     name,
     city,
@@ -346,92 +561,263 @@ app.post('/createvisitorData', verifyToken, async (req, res) => {
 });
 
 
-// Visitor login
-app.post('/visitor/login', async (req, res) => {
+// View all visitors (protected route for authenticated host only)
+app.get('/host/viewvisitors', verifyToken, async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const visitor = await visitorCollection.findOne({ username, password });
-
-    if (visitor) {
-      // Generate a new token
-      const newToken = generateToken({ username: visitor.username, password: visitor.password });
-
-      // Store the new token with a session identifier
-      const sessionIdentifier = generateSessionIdentifier(); // Implement this function
-      activeVisitorTokens[visitor.username] = { token: newToken, session: sessionIdentifier };
-
-      // Send the new token and session identifier in the response
-      const responseMessage = `Visitor login successful! 
-      Token: ${newToken}
-      Session: ${sessionIdentifier}`;
-      res.send(responseMessage);
-    } else {
-      res.status(401).send('Visitor login failed. Invalid credentials.');
-    }
-  } catch (error) {
-    console.error('Error in visitor login route:', error);
-    res.status(500).send('An error occurred during visitor login.');
-  }
-});
-
-
-// Retrieve Visitor Pass for Authenticated Visitor
-app.get('/visitor/retrievepass', verifyToken, async (req, res) => {
-  try {
-    // Check if the request is coming from an authenticated visitor
-    if (req.user && req.user.username) {
+    // Check if the request is coming from an authenticated host
+    if (req.user && req.user.username && req.user.role === 'host') {
       // Check if the stored session identifier matches the one in the request
-      const storedSessionIdentifier = activeVisitorTokens[req.user.username]?.session;
+      const storedSessionIdentifier = activeTokens[req.user.username]?.session;
       const requestSessionIdentifier = req.headers['x-session-identifier']; // Include session identifier in the request headers
 
       if (storedSessionIdentifier !== requestSessionIdentifier) {
-        return res.status(401).send('Unauthorized: Session expired. Please login again!');
+        return res.status(401).send('Unauthorized!');
       }
 
-      // Retrieve the visitor pass based on the visitor's information
-      const visitorPass = await visitorPassCollection.findOne({ visitorId: req.user.visitorId });
-
-      if (visitorPass) {
-        res.send(`Your Visitor Pass Number: ${visitorPass.passNumber}`);
-      } else {
-        res.status(404).send('Visitor pass not found.');
-      }
-    } else {
-      res.status(401).send('Unauthorized: Visitor authentication required.');
-    }
-  } catch (error) {
-    console.error('Error retrieving visitor pass:', error);
-    res.status(500).send('Error retrieving visitor pass');
-  }
-});
-
-
-// View all visitors (protected route for authenticated admins only)
-app.get('/visitors', verifyToken, async (req, res) => {
-  // Check if the request is coming from an authenticated admin
-  if (req.user && req.user.username) {
-
-    // Check if the stored session identifier matches the one in the request
-    const storedSessionIdentifier = activeTokens[req.user.username]?.session;
-    const requestSessionIdentifier = req.headers['x-session-identifier']; // Include session identifier in the request headers
-
-    if (storedSessionIdentifier !== requestSessionIdentifier) {
-      return res.status(401).send('Unauthorized: Session expired. Please login again!');
-    }
-    try {
+      // Proceed to fetch and send the list of visitors for authenticated hosts
       const visitors = await visitorCollection.find().toArray();
       res.send(visitors);
-    } catch (error) {
-      res.status(500).send('Error viewing visitors');
+    } else {
+      res.status(401).send('Unauthorized: Host authentication required.');
     }
-  } else {
-    res.status(401).send('Unauthorized: Admin authentication required.');
+  } catch (error) {
+    console.error('Error viewing visitors:', error);
+    res.status(500).send('Error viewing visitors');
   }
 });
+
+
+// Endpoint to retrieve host contact number by visitor pass
+app.post('/security/getHostContactNumber', verifySecurityToken, async (req, res) => {
+  try {
+    // Check if the request is coming from an authenticated security personnel
+    if (req.security && req.security.role === 'security') {
+      // Extract visitor pass from the request body
+      const visitorPass = req.body.visitorPass;
+
+      // Find the visitor pass in the database
+      const visitorPassData = await visitorPassCollection.findOne({ passNumber: visitorPass });
+
+      if (visitorPassData) {
+        // Check if the visitor pass is associated with a host
+        const hostData = await hostCollection.findOne({ username: visitorPassData.issuedBy });
+
+        if (hostData) {
+          // Return the contact number of the host
+          res.json({ 'Visitor Pass issued by': visitorPassData.issuedBy,
+          'Contact Number': hostData.contactNum });
+        } else {
+          res.status(404).json({ error: 'Host not found for the given visitor pass.' });
+        }
+      } else {
+        res.status(404).json({ error: 'Visitor pass not found.' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized: Security authentication required.' });
+    }
+  } catch (error) {
+    console.error('Error retrieving host contact number:', error);
+    res.status(500).json({ error: 'Error retrieving host contact number.' });
+  }
+});
+
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
+app.set('view engine', 'ejs');
+// Serve static files (like stylesheets) from the public folder
+app.use(express.static('public'));
 
+// Define a route for the login page
+app.get('/loginAdmin', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+app.post('/loginAdmin', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Check if the username and password match an admin in the admin collection
+    const admin = await adminCollection.findOne({ username, password });
+
+    if (admin) {
+      // Generate a new token
+      const newToken = generateToken({ username: admin.username, role: admin.role });
+
+      // Store the new token with a session identifier
+      const sessionIdentifier = generateSessionIdentifier(); // Implement this function
+      activeTokens[admin.username] = { token: newToken, session: sessionIdentifier };
+
+      // Fetch all host data from the database
+      const allHosts = await hostCollection.find().toArray();
+
+      // Render the login page with admin data, all host data, token, and session identifier
+
+      res.render('login', {
+        adminData: admin,
+        hostsData: allHosts,
+        token: newToken,
+        session: sessionIdentifier,
+      });
+
+    } else {
+      // Render an error page for unsuccessful login
+      res.render('error', { message: 'Invalid username or password' });
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.render('error', { message: 'An error occurred during login' });
+  }
+});
+
+
+
+async function getUserById(userId) {
+  try {
+    // Fetch user from the appropriate collection (security/host)
+    const securityUser = await securityCollection.findOne({ _id: new ObjectId(userId) });
+    const hostUser = await hostCollection.findOne({ _id: new ObjectId(userId) });
+
+    return securityUser || hostUser;
+  } catch (error) {
+    console.error('Error getting user by ID:', error);
+    throw error;
+  }
+}
+
+
+// Endpoint to view user roles (GET)
+app.get('/admin/viewUserRoles/:userId', verifyToken, async (req, res) => {
+  try {
+    console.log('UserID:', req.params.userId);
+    
+    if (req.user && req.user.role === 'admin') {
+      // Fetch user data based on the user ID
+      const user = await getUserById(req.params.userId);
+
+      if (user) {
+        console.log('User:', user);
+        res.json({ username: user.username, role: user.role });
+      } else {
+        console.log('User not found');
+        res.status(404).json({ error: 'User not found.' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized: Admin authentication required.' });
+    }
+  } catch (error) {
+    console.error('Error viewing user roles:', error);
+    res.status(500).json({ error: `Error viewing user roles: ${error.message}` });
+  }
+});
+
+
+async function updateUserRole(userId, newRole) {
+  try {
+    console.log('Updating user role for userId:', userId);
+
+    // Try finding the user in the security collection
+    const securityUser = await securityCollection.findOne({ _id: new ObjectId(userId) });
+
+    // Check if the user is found in the security collection
+    if (securityUser) {
+      // Update the user role in the security collection
+      const updatedSecurityUser = await securityCollection.findOneAndUpdate(
+        { _id: new ObjectId(userId) },
+        { $set: { role: newRole } },
+        { returnDocument: 'after' }
+      );
+
+      console.log('Updated security user:', updatedSecurityUser);
+
+      return updatedSecurityUser.value;
+    }
+
+    // If the user is not found in the security collection, try finding in the host collection
+    const hostUser = await hostCollection.findOne({ _id: new ObjectId(userId) });
+
+    // Check if the user is found in the host collection
+    if (hostUser) {
+      // Update the user role in the host collection
+      const updatedHostUser = await hostCollection.findOneAndUpdate(
+        { _id: new ObjectId(userId) },
+        { $set: { role: newRole } },
+        { returnDocument: 'after' }
+      );
+
+      console.log('Updated host user:', updatedHostUser);
+
+      return updatedHostUser.value;
+    }
+
+    // User not found in any collection, throw an error
+    throw new Error('User not found.');
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    throw error;
+  }
+}
+
+
+
+
+
+
+
+// Endpoint to edit user roles (PUT)
+app.put('/admin/editUserRoles/:userId', verifyToken, async (req, res) => {
+  try {
+    // Check if the request is coming from an authenticated admin
+    if (req.user && req.user.role === 'admin') {
+      // Fetch user data based on the user ID
+      const user = await updateUserRole(req.params.userId, req.body.role);
+
+      if (user) {
+        // Update user role in the database
+        res.json({ message: 'User role updated successfully.', username: user.username, role: user.role });
+      } else {
+        res.status(404).json({ error: 'User not found.' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized: Admin authentication required.' });
+    }
+  } catch (error) {
+    console.error('Error editing user roles:', error);
+    res.status(500).json({ error: 'Error editing user roles.' });
+  }
+});
+
+
+
+
+
+// Visitor login
+// app.post('/visitor/login', async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+//     const visitor = await visitorCollection.findOne({ username, password });
+
+//     if (visitor) {
+//       // Generate a new token
+//       const newToken = generateToken({ username: visitor.username, password: visitor.password });
+
+//       // Store the new token with a session identifier
+//       const sessionIdentifier = generateSessionIdentifier(); // Implement this function
+//       activeVisitorTokens[visitor.username] = { token: newToken, session: sessionIdentifier };
+
+//       // Send the new token and session identifier in the response
+//       const responseMessage = `Visitor login successful! 
+//       Token: ${newToken}
+//       Session: ${sessionIdentifier}`;
+//       res.send(responseMessage);
+//     } else {
+//       res.status(401).send('Visitor login failed. Invalid credentials.');
+//     }
+//   } catch (error) {
+//     console.error('Error in visitor login route:', error);
+//     res.status(500).send('An error occurred during visitor login.');
+//   }
+// });
 
 // //Delete a visitor
 // app.delete('/deletevisitor/:id', verifyToken, async (req, res) => {
@@ -511,8 +897,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 //     res.status(500).send('Error viewing emergency_contact');
 //   }
 // });
-
-// app.use(express.json())
 
 // Start the server
 app.listen(port, () => {

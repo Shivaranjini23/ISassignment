@@ -1,0 +1,71 @@
+<!-- views/login.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #646767;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #a9d5f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to the Dashboard</h1>
+  
+  <!-- Display Token and Session Identifier -->
+  <p>Token: <%= token %></p>
+  <p>Session Identifier: <%= session %></p>
+  
+  <!-- Display Admin Data -->
+  <p>Admin Data: <%= JSON.stringify(adminData) %></p>
+
+  <h2>Host Data</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Contact Number</th>
+        <!-- Add other fields as needed -->
+      </tr>
+    </thead>
+    <tbody>
+      <% hostsData.forEach(host => { %>
+        <tr>
+          <td><%= host.username %></td>
+          <td><%= host.name %></td>
+          <td><%= host.age %></td>
+          <td><%= host.gender %></td>
+          <td><%= host.contactNum %></td>
+          <!-- Add other fields as needed -->
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

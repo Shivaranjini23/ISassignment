@@ -11,95 +11,15 @@
  *       in: header
  *       name: x-session-identifier
  */
-
-
-/**
- * @swagger
- * tags:
- *   - name: Admin
- *     description: Admin operations
- *   - name: Visitor
- *     description: Visitor operations
- */
- 
 /**
  * @openapi
- * /login:
+ * /registerSecurity:
  *   post:
- *     summary: Admin login
- *     description: Log in as an admin to obtain an authentication token.
- *     tags:
- *       - Admin
+ *     summary: Register a security user
+ *     description: Endpoint to register a security user.
+ *     tags: [Security]
  *     requestBody:
- *       description: Admin credentials for login
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *                 description: Admin username.
- *               password:
- *                 type: string
- *                 description: Admin password.
- *     responses:
- *       200:
- *         description: Successful login response
- *       401:
- *         description: Invalid credentials. Please try again.
- *       500:
- *         description: Internal server error
- */
-
-
-
-/**
-/**
- * @openapi
- * /issueVisitorPass:
- *   post:
- *     summary: Issue visitor pass for authenticated admin
- *     description: Issue a visitor pass for an authenticated admin. Requires admin authentication.
- *     tags:
- *       - Admin
- *     security:
- *       - BearerAuth: []
- *       - SessionIdentifier: []
- *     requestBody:
- *       description: Visitor details for pass issuance
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               visitorId:
- *                 type: string
- *                 description: ID of the visitor for whom the pass is issued.
- *               visitorName:
- *                 type: string
- *                 description: Name of the visitor for whom the pass is issued.
- *     responses:
- *       200:
- *         description: Successful response
- *       401:
- *         description: Unauthorized - Admin authentication required or session expired
- *       404:
- *         description: Visitor not found. Please register the visitor first.
- *       500:
- *         description: Internal server error
- */
-
-
-/**
- * @swagger
- * /register:
- *   post:
- *     summary: Register a new admin with additional details.
- *     tags: [Admin]
- *     requestBody:
+ *       description: Registration details
  *       required: true
  *       content:
  *         application/json:
@@ -113,28 +33,392 @@
  *               name:
  *                 type: string
  *               age:
- *                 type: integer
+ *                 type: string
  *               gender:
  *                 type: string
  *     responses:
  *       200:
- *         description: Registration successful.
- *       400:
- *         description: Username already exists. Please choose a different username.
+ *         description: Registration successful
  *       500:
- *         description: An error occurred during registration.
+ *         description: Internal server error
  */
-// 
+/**
+ * @swagger
+ * /registerAdmin:
+ *    post:
+ *     summary: Register an admin user
+ *     description: Endpoint to register an admin user.
+ *     tags: [Admin]
+ *     requestBody:
+ *       description: Admin registration details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               age:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Admin registration successful
+ *       400:
+ *         description: Invalid or missing details
+ *       500:
+ *         description: Internal server error
+ */
 
 /**
  * @swagger
- * /createvisitorData:
+ * /loginHost:
  *   post:
- *     summary: Create a new visitor with details.
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []  
+ *     summary: Login as a host
+ *     description: Endpoint to log in as a host.
+ *     tags: [Host]
  *     requestBody:
+ *       description: Host login details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Host login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *                 session:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+/**
+ * @swagger
+ * /loginSecurity:
+ *   post:
+ *     summary: Login as a security user
+ *     description: Endpoint to log in as a security user.
+ *     tags: [Security]
+ *     requestBody:
+ *       description: Security login details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Security login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *                 session:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+
+/**
+ * @swagger
+ * /loginAdmin:
+ *   post:
+ *     summary: Admin Login
+ *     description: Endpoint for admin login.
+ *     tags: [Admin]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             required:
+ *               - username
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: HTML content for the login page
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: HTML content for the error page
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: HTML content for the error page
+ */
+
+  
+/**
+ * @swagger
+ * /securityApproval:
+ *   post:
+ *     summary: Approve a host (Security)
+ *     description: Endpoint for security to approve a host.
+ *     tags: [Security]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       description: Host approval details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Host approval successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ */
+
+/**
+ * @swagger
+ * /visitor/issueVisitorPass:
+ *   post:
+ *     summary: Issue Visitor Pass (Admin)
+ *     description: Endpoint for an authenticated admin to issue a visitor pass.
+ *     tags: [Visitor]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       description: Visitor pass details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Visitor pass issued successfully
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Visitor pass issued successfully! Visitor Name: John Doe Pass Number: ABC123"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Unauthorized: Admin authentication required."
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Unauthorized: Session expired. Please login again!"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Visitor not found. Please register the visitor first."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Error issuing visitor pass"
+ *       headers:
+ *         x-session-identifier:
+ *           description: Session identifier
+ *           schema:
+ *             type: string
+ *           example: Session_1234567890123_456
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Visitor
+ *   description: Visitor pass operations
+ *
+ * /visitor/retrievepass:
+ *   post:
+ *     summary: Retrieve Visitor Pass (Visitor)
+ *     description: Endpoint for an authenticated visitor to retrieve their visitor pass.
+ *     tags: [Visitor]
+ *     requestBody:
+ *       description: Visitor ID
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Visitor pass retrieved successfully
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Visitor Pass Number for ABC123: XYZ789"
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Visitor ID is required."
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Visitor pass not found."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Error retrieving visitor pass"
+ */
+
+/**
+ * @swagger
+ * /visitor/createvisitorData:
+ *   post:
+ *     summary: Create Visitor Data (Admin)
+ *     description: Endpoint for an authenticated admin to create visitor data.
+ *     tags: [Visitor]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       description: Visitor details
  *       required: true
  *       content:
  *         application/json:
@@ -155,19 +439,97 @@
  *                 type: string
  *     responses:
  *       200:
- *         description: Visitor created successfully.
+ *         description: Visitor data created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                 city:
+ *                   type: string
+ *                 relationship:
+ *                   type: string
+ *                 visitorId:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *                 password:
+ *                   type: string
  *       400:
- *         description: Username already exists. Please choose a different username.
+ *         description: Bad Request
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Username already exists. Please choose a different username."
  *       500:
- *         description: An error occurred while creating the visitor.
+ *         description: Internal server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "An error occurred while creating the visitor"
  */
-
 /**
  * @swagger
- * /visitor/login:
+ * /host/viewvisitors:
+ *   get:
+ *     summary: View Visitors (Host)
+ *     description: Endpoint for an authenticated host to view the list of visitors.
+ *     tags: [Host]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-session-identifier
+ *         required: true
+ *         description: The session identifier.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of visitors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                   city:
+ *                     type: string
+ *                   relationship:
+ *                     type: string
+ *                   visitorId:
+ *                     type: string
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Unauthorized: Host authentication required."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Error viewing visitors"
+ */
+/**
+ * @swagger
+ * /security/getHostContactNumber:
  *   post:
- *     summary: Authenticate a visitor and generate a new token.
- *     tags: [Visitor]
+ *     summary: Get Host Contact Number (Security)
+ *     description: Endpoint for an authenticated security personnel to retrieve the contact number of the host associated with a visitor pass.
+ *     tags: [Security]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -175,55 +537,186 @@
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               visitorPass:
  *                 type: string
- *               password:
- *                 type: string
+ *             required:
+ *               - visitorPass
  *     responses:
  *       200:
- *         description: Visitor login successful.
+ *         description: Host contact number
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Visitor Pass issued by:
+ *                   type: string
+ *                 Contact Number:
+ *                   type: string
  *       401:
- *         description: Visitor login failed. Invalid credentials.
- *       500:
- *         description: An error occurred during visitor login.
- */
-
-/**
- * @openapi
- * /visitor/retrievepass:
- *   get:
- *     summary: Retrieve visitor pass information
- *     description: Retrieve the visitor pass based on the visitor's information.
- *     tags:
- *       - Visitor
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Successful response
- *       401:
- *         description: Unauthorized - Session expired or visitor authentication required
+ *         description: Unauthorized
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Unauthorized: Security authentication required."
  *       404:
- *         description: Visitor pass not found
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Host not found for the given visitor pass."
+ *               required:
+ *                 - error
  *       500:
  *         description: Internal server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Error retrieving host contact number."
  */
 
 /**
- * @openapi
- * /visitors:
+ * @swagger
+ * /admin/viewUserRoles/{userId}:
  *   get:
- *     summary: View all visitors (protected route for authenticated admins only)
- *     description: Retrieve a list of all visitors. Requires admin authentication.
- *     tags:
- *       - Admin
+ *     summary: View User Roles
+ *     description: Endpoint to view the roles of a user.
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID of the user to view roles
+ *         schema:
+ *           type: string
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                   description: Username of the user
+ *                 role:
+ *                   type: string
+ *                   description: Role of the user
  *       401:
- *         description: Unauthorized - Admin authentication required or session expired
+ *         description: Unauthorized: Admin authentication required.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Unauthorized error message
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: User not found error message
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Internal server error message
+ */
+/**
+ * @swagger
+ * /admin/editUserRoles/{userId}:
+ *   put:
+ *     summary: Edit User Roles
+ *     description: Endpoint to edit the roles of a user.
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID of the user to edit roles
+ *         schema:
+ *           type: string
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         description: Bearer token for authentication
+ *         schema:
+ *           type: string
+ *       - in: body
+ *         name: body
+ *         required: true
+ *         description: Request body containing the new role
+ *         schema:
+ *           type: object
+ *           properties:
+ *             role:
+ *               type: string
+ *               description: New role for the user
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                 username:
+ *                   type: string
+ *                   description: Username of the user
+ *                 role:
+ *                   type: string
+ *                   description: New role of the user
+ *       401:
+ *         description: Unauthorized: Admin authentication required.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Unauthorized error message
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: User not found error message
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Internal server error message
  */
