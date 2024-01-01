@@ -44,6 +44,42 @@
  */
 /**
  * @swagger
+ * /registerHost:
+ *   post:
+ *     summary: Register a host
+ *     description: Endpoint to register a host.
+ *     tags: [Host]
+ *     requestBody:
+ *       description: Registration details for a host
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               age:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               contactNum:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Registration successful
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /registerAdmin:
  *    post:
  *     summary: Register an admin user
