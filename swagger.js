@@ -354,6 +354,7 @@
  *           schema:
  *             type: string
  *           example: Session_1234567890123_456
+ */
 
 
 /**
@@ -612,7 +613,7 @@
  *                   type: string
  *                   description: Role of the user
  *       401:
- *         description: Unauthorized: Admin authentication required.
+ *         description: 'Unauthorized: Admin authentication required.'
  *         content:
  *           application/json:
  *             schema:
@@ -642,6 +643,7 @@
  *                   type: string
  *                   description: Internal server error message
  */
+
 /**
  * @swagger
  * /admin/editUserRoles/{userId}:
@@ -690,7 +692,7 @@
  *                   type: string
  *                   description: New role of the user
  *       401:
- *         description: Unauthorized: Admin authentication required.
+ *         description: "Unauthorized: Admin authentication required."
  *         content:
  *           application/json:
  *             schema:
