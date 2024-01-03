@@ -79,7 +79,7 @@ Content-Type: application/json
 
 
 ### Issue Visitor Pass ###
-POST http://localhost:3000/visitor/issueVisitorPass
+POST http://localhost:3000/issueVisitorPass
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTkxNWJmYjhlN2ZmMDg5NmM4OWQwZmYiLCJ1c2VybmFtZSI6IkRhbnlhIiwicGFzc3dvcmQiOiJEYW4xMSIsIm5hbWUiOiJEYW55YSBKYW1lcyIsImFnZSI6IjMwIiwiZ2VuZGVyIjoiZmVtYWxlIiwiY29udGFjdE51bSI6IjA3NDUzMjQ4OCIsInJvbGUiOiJob3N0IiwiYXBwcm92YWxTdGF0dXMiOnRydWUsImlhdCI6MTcwNDA5ODIzNH0.RfSlU59SfqmHP9_S_LyrS670SsQCGL1Eg5QtocJMG3E
 x-session-identifier: Session_1704098234264_98
 Content-Type: application/json
@@ -90,31 +90,22 @@ Content-Type: application/json
 }
 
 ### Get Visitors ###
-GET http://localhost:3000/host/viewvisitors
+GET http://localhost:3000/viewvisitors
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTkxMmNlNzQ0NWViNjU0ZTFjMGRmYWQiLCJ1c2VybmFtZSI6IkRhbnlhIiwicGFzc3dvcmQiOiJEYW4xMSIsIm5hbWUiOiJEYW55YSBKYW1lcyIsImFnZSI6IjMwIiwiZ2VuZGVyIjoiZmVtYWxlIiwicm9sZSI6Imhvc3QiLCJhcHByb3ZhbFN0YXR1cyI6dHJ1ZSwiYXBwcm92ZWQiOnRydWUsImlhdCI6MTcwNDAxNDUzN30.0A1Gvm9MuAwLuHyV2wH9cpTKAYHmnG0IMZ01nPs6hTw
 x-session-identifier: Session_1704014537176_510
 Content-Type: application/json
 
 
 ### Retrieve Visitor Pass ###
-POST http://localhost:3000/visitor/retrievepass
+POST http://localhost:3000/retrievepass
 Content-Type: application/json
 
 {
   "visitorId": "002"
 }
 
-### Admin loginpage ###
-POST http://localhost:3000/loginAdmin
-Content-Type: application/json
 
-{
-  "username": "TroySam",
-  "password": "Troy11"
-}
-###
-
-POST http://localhost:3000/security/getHostContactNumber
+POST http://localhost:3000/getHostContactNumber
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRyb3lTYW0iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDQxMDg5NzJ9.oCu9iebiD0Yv8NarH65-re6Z16k7KxPiShlBIJ6Qv-U</p>
 x-session-identifier: Session_1704098582840_741
@@ -124,13 +115,13 @@ x-session-identifier: Session_1704098582840_741
 }
 
 ###view user roles###
-GET http://localhost:3000/admin/viewUserRoles/65915bfb8e7ff0896c89d0ff
+GET http://localhost:3000/65915bfb8e7ff0896c89d0ff
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRyb3lTYW0iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDQxMDI5Nzh9.mZZEJTYOjTjo64g7t6aeXnfkiZATEYko8V-NmOV_Fbs
 x-session-identifier: Session_1704105924849_138
 
 ###edit user roles###
-PUT http://localhost:3000/admin/editUserRoles/65915bfb8e7ff0896c89d0ff
+PUT http://localhost:3000/65915bfb8e7ff0896c89d0ff
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRyb3lTYW0iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDQxMDg5NzJ9.oCu9iebiD0Yv8NarH65-re6Z16k7KxPiShlBIJ6Qv-U
 x-session-identifier: Session_1704108972224_164
@@ -140,7 +131,7 @@ x-session-identifier: Session_1704108972224_164
 }
 
 ###swagger page###
-GET http://localhost:3000/api-docs
+GET https://prisonvms.azurewebsites.net/api-docs
 Content-Type: application/json
 ###
 
