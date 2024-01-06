@@ -333,9 +333,9 @@
  * @swagger
  * /visitor/issueVisitorPass:
  *   post:
- *     summary: Issue Visitor Pass (Admin)
+ *     summary: Issue Visitor Pass (by host)
  *     description: Endpoint for an authenticated admin to issue a visitor pass.
- *     tags: [Visitor]
+ *     tags: [Host]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -449,9 +449,9 @@
  * @swagger
  * /visitor/createvisitorData:
  *   post:
- *     summary: Create Visitor Data (Admin)
+ *     summary: Create Visitor Data (Host)
  *     description: Endpoint for an authenticated admin to create visitor data.
- *     tags: [Visitor]
+ *     tags: [Host]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -518,13 +518,6 @@
  *     tags: [Host]
  *     security:
  *       - BearerAuth: []
- *     parameters:
- *       - in: header
- *         name: x-session-identifier
- *         required: true
- *         description: The session identifier.
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: List of visitors

@@ -1,13 +1,13 @@
 ### GOODLUCK ###
-### Security/Host Registration ###
+### Security Registration ###
 POST http://localhost:3000/registerSecurity
 Content-Type: application/json
 
 {
-  "username": "MichaelJ",
-  "password": "Michael11",
-  "name": "Michael James",
-  "age": "34",
+  "username": "John",
+  "password": "John12",
+  "name": "John Noah",
+  "age": "30",
   "gender": "male"
 }
 

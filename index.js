@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const app = express();
 const ejs = require('ejs');
+const cors = require('cors');
 const port = process.env.PORT || 3000;
 // Declare global data structures to store active tokens
 const activeTokens = {}; // For admin tokens
@@ -78,6 +79,8 @@ client.connect()
 
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cors());
+
 
 app.get('/', (req, res) => {
   res.send('Welcome to Prison Visitor Management System of Group 17!')
@@ -434,7 +437,7 @@ app.post('/securityApproval', verifySecurityToken, async (req, res) => {
 
 
 
-// Issue Visitor Pass for Authenticated Admin
+// Issue Visitor Pass for visitor
 app.post('/visitor/issueVisitorPass', verifyToken, async (req, res) => {
   try {
     // Check if the request is coming from an authenticated admin
